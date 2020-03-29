@@ -2,31 +2,39 @@ package main
 
 import (
 	"fmt"
+	"github.com/BambooTuna/quest-market/controller"
+	"github.com/BambooTuna/quest-market/dao"
+	"github.com/BambooTuna/quest-market/lib/session"
+	"github.com/BambooTuna/quest-market/usecase"
+	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 	"os"
 )
 
 func main() {
-	http.HandleFunc("/", indexHandler)
+
+	sessionDao := session.InmemorySessionStorageDao{Data: make(map[string]string)}
+	session := session.DefaultSession{
+		Dao: sessionDao,
+	}
+
+	accountCredentialsDao := dao.AccountCredentialsDaoImpl{}
+
+	authenticationUseCase := usecase.AuthenticationUseCase{AccountCredentialsDao: accountCredentialsDao}
+
+	authenticationController := controller.AuthenticationController{
+		Session:               session,
+		AuthenticationUseCase: authenticationUseCase,
+	}
+
+	r := gin.Default()
+	r.POST("/signup", authenticationController.SignUp())
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 		log.Printf("Defaulting to port %s", port)
 	}
 
-	log.Printf("Listening on port %s", port)
-	log.Printf("Open http://localhost:%s in the browser", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
-}
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-	_, err := fmt.Fprint(w, "Hello, World!")
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
+	log.Fatal(r.Run(fmt.Sprintf(":%s", port)))
 }

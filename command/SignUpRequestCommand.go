@@ -5,8 +5,8 @@ import (
 )
 
 type SignUpRequestCommand struct {
-	Mail     string
-	Password string
+	Mail     string `json:"mail"`
+	Password string `json:"pass"`
 }
 
 func (c *SignUpRequestCommand) CreateAccountCredentials() (*account.AccountCredentials, error) {
