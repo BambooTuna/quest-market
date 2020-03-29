@@ -36,4 +36,4 @@ jobs:
         CI: true
         PROJECT_NAME: market-114
         GCLOUD_SERVICE_KEY: ${{ secrets.GcloudServiceKey }}
-        GOPATH: ${HOME}/.go
+        GOPATH: ~/.go
