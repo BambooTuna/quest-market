@@ -29,8 +29,8 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-#      env:
-#        GOPATH: .go
+      env:
+        GOPATH: /home/runner/go
     - name: GAE deploy
       run: |
         sudo apt-get install google-cloud-sdk-app-engine-go
@@ -41,4 +41,4 @@ jobs:
         CI: true
         PROJECT_NAME: market-114
         GCLOUD_SERVICE_KEY: ${{ secrets.GcloudServiceKey }}
-#        GOPATH: ~/.go
+        GOPATH: /home/runner/go
