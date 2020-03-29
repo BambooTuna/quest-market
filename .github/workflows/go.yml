@@ -24,13 +24,14 @@ jobs:
         pwd
         echo ${GOPATH}
         echo ${GOROOT}
+        mkdir -p ./gopath
         go get -v -t -d ./...
         if [ -f Gopkg.toml ]; then
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
       env:
-        GOPATH: /tmp/staging/srv/gopath
+        GOPATH: ./gopath
     - name: GAE deploy
       run: |
         sudo apt-get install google-cloud-sdk-app-engine-go
