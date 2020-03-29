@@ -30,7 +30,7 @@ jobs:
             dep ensure
         fi
       env:
-        GOPATH: /home/runner/go
+        GOPATH: /go
     - name: GAE deploy
       run: |
         sudo apt-get install google-cloud-sdk-app-engine-go
@@ -41,4 +41,3 @@ jobs:
         CI: true
         PROJECT_NAME: market-114
         GCLOUD_SERVICE_KEY: ${{ secrets.GcloudServiceKey }}
-        GOPATH: /home/runner/go
