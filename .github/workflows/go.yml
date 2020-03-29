@@ -30,7 +30,7 @@ jobs:
             dep ensure
         fi
       env:
-        GOPATH: /go
+        GOPATH: /tmp/staging/srv/gopath
     - name: GAE deploy
       run: |
         sudo apt-get install google-cloud-sdk-app-engine-go
