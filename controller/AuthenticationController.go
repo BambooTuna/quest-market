@@ -25,3 +25,17 @@ func (c *AuthenticationController) SignUp() func(*gin.Context) {
 		return &accountCredentials.AccountId, nil
 	})
 }
+
+func (c *AuthenticationController) SignIn() func(*gin.Context) {
+	return c.Session.SetSession(func(ctx *gin.Context) (*string, error) {
+		var signInRequestCommand command.SignInRequestCommand
+		if err := ctx.BindJSON(&signInRequestCommand); err != nil {
+			return nil, err
+		}
+		accountCredentials, err := c.AuthenticationUseCase.SignIn(ctx, &signInRequestCommand)
+		if err != nil {
+			return nil, err
+		}
+		return &accountCredentials.AccountId, nil
+	})
+}

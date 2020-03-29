@@ -1,6 +1,6 @@
 package command
 
 type SignInRequestCommand struct {
-	Mail     string
-	Password string
+	Mail     string `json:"mail"`
+	Password string `json:"pass"`
 }

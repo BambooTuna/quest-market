@@ -6,9 +6,9 @@ import (
 )
 
 type AccountCredentials struct {
-	AccountId string
-	Mail      string
-	Password  string
+	AccountId string `db:"account_id"`
+	Mail      string `db:"mail"`
+	Password  string `db:"password"`
 }
 
 func (a *AccountCredentials) Authentication(plainPass string) (*AccountCredentials, error) {
