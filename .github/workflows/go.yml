@@ -26,6 +26,8 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
+      env:
+        GOPATH: ~/.go
     - name: GAE deploy
       run: |
         sudo apt-get install google-cloud-sdk-app-engine-go
