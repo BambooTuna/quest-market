@@ -1,0 +1,39 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+        if [ -f Gopkg.toml ]; then
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+        fi
+
+    - name: GAE deploy
+      run: |
+        echo ${GCLOUD_SERVICE_KEY} | base64 -d > ./service_key.json
+        echo 'github-actions@${PROJECT_NAME}.iam.gserviceaccount.com' | gcloud auth activate-service-account --key-file ./service_key.json
+        gcloud app deploy app.yaml --project ${PROJECT_NAME}
+      env:
+        CI: true
+        PROJECT_NAME: market-114
+        GCLOUD_SERVICE_KEY: ${{ secrets.GcloudServiceKey }}
