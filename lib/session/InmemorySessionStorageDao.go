@@ -1,7 +1,7 @@
 package session
 
 import (
-	"regexp/syntax"
+	"errors"
 	"time"
 )
 
@@ -10,21 +10,22 @@ type InmemorySessionStorageDao struct {
 }
 
 func (r InmemorySessionStorageDao) Store(key, value string, expiration time.Duration) error {
+	println("Store: "+key, "value: "+value)
 	r.Data[key] = value
-	println(key, value)
 	return nil
 }
 
 func (r InmemorySessionStorageDao) Find(key string) (*string, error) {
+	println("Find: " + key)
 	result, exist := r.Data[key]
-	println(key)
 	if !exist {
-		return nil, &syntax.Error{Code: syntax.ErrInternalError, Expr: ""}
+		return nil, errors.New("forbidden")
 	}
 	return &result, nil
 }
 
 func (r InmemorySessionStorageDao) Remove(key string) error {
+	println("Remove: " + key)
 	delete(r.Data, key)
 	return nil
 }
