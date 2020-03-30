@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"os"
 )
 
 func GenerateUUID() (string, error) {
@@ -24,4 +25,12 @@ func VerifyPassword(hash, s string) error {
 	} else {
 		return errors.New("forbidden")
 	}
+}
+
+func FetchEnvValue(key string, defaultValue string) string {
+	dataSourceName := os.Getenv(key)
+	if dataSourceName == "" {
+		dataSourceName = defaultValue
+	}
+	return dataSourceName
 }

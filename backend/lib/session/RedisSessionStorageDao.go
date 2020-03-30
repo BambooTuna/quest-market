@@ -1,22 +1,23 @@
 package session
 
-import "time"
+import (
+	"github.com/go-redis/redis/v7"
+	"time"
+)
 
 type RedisSessionStorageDao struct {
+	Client *redis.Client
 }
 
 func (r RedisSessionStorageDao) Store(key, value string, expiration time.Duration) error {
-	// TODO
-	return nil
+	return r.Client.Set(key, value, expiration).Err()
 }
 
 func (r RedisSessionStorageDao) Find(key string) (*string, error) {
-	// TODO
-	result := "result value"
-	return &result, nil
+	result, err := r.Client.Get(key).Result()
+	return &result, err
 }
 
 func (r RedisSessionStorageDao) Remove(key string) error {
-	// TODO
-	return nil
+	return r.Client.Del(key).Err()
 }
