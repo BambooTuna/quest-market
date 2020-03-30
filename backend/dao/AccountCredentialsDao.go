@@ -1,7 +1,7 @@
 package dao
 
 import "context"
-import "github.com/BambooTuna/quest-market/model/account"
+import "github.com/BambooTuna/quest-market/backend/model/account"
 
 type AccountCredentialsDao interface {
 	ResolveByAccountId(ctx context.Context, accountId string) (*account.AccountCredentials, error)

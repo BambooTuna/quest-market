@@ -1,4 +1,4 @@
-runtime: go113
+runtime: nodejs10
 service: default
 instance_class: F1
 automatic_scaling:
@@ -11,11 +11,13 @@ automatic_scaling:
   max_concurrent_requests: 80
 
 handlers:
-- url: /.*
-  script: auto
+  - url: /((.*)\.(js|css))$
+    static_files: dist/\1
+    upload: dist/(.*)\.(js|css)$
+
+  - url: /(.*)
+    static_files: dist/index.html
+    upload: dist/index.html
 
 vpc_access_connector:
   name: "projects/market-114/locations/asia-northeast1/connectors/market-connect"
-
-env_variables:
-  PORT: 8081

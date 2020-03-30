@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/BambooTuna/quest-market/model/account"
+	"github.com/BambooTuna/quest-market/backend/model/account"
 )
 
 type SignUpRequestCommand struct {

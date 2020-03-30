@@ -1,7 +1,7 @@
 package account
 
 import (
-	"github.com/BambooTuna/quest-market/settings"
+	"github.com/BambooTuna/quest-market/backend/settings"
 	"gopkg.in/go-playground/validator.v9"
 )
 

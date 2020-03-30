@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"context"
-	"github.com/BambooTuna/quest-market/command"
-	"github.com/BambooTuna/quest-market/dao"
-	"github.com/BambooTuna/quest-market/model/account"
+	"github.com/BambooTuna/quest-market/backend/command"
+	"github.com/BambooTuna/quest-market/backend/dao"
+	"github.com/BambooTuna/quest-market/backend/model/account"
 )
 
 type AuthenticationUseCase struct {

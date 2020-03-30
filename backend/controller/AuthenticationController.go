@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"github.com/BambooTuna/quest-market/command"
-	"github.com/BambooTuna/quest-market/lib/session"
-	"github.com/BambooTuna/quest-market/model"
-	"github.com/BambooTuna/quest-market/usecase"
+	"github.com/BambooTuna/quest-market/backend/command"
+	"github.com/BambooTuna/quest-market/backend/lib/session"
+	"github.com/BambooTuna/quest-market/backend/model"
+	"github.com/BambooTuna/quest-market/backend/usecase"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

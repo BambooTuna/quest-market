@@ -6,7 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"gopkg.in/gorp.v1"
 )
-import "github.com/BambooTuna/quest-market/model/account"
+import "github.com/BambooTuna/quest-market/backend/model/account"
 
 type AccountCredentialsDaoImpl struct {
 	DBSession *gorp.DbMap

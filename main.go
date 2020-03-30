@@ -1,13 +1,14 @@
-package main
+package quest_market
 
 import (
 	"database/sql"
 	"fmt"
-	"github.com/BambooTuna/quest-market/controller"
-	"github.com/BambooTuna/quest-market/dao"
-	"github.com/BambooTuna/quest-market/lib/session"
-	"github.com/BambooTuna/quest-market/model/account"
-	"github.com/BambooTuna/quest-market/usecase"
+	"github.com/BambooTuna/quest-market/backend/controller"
+	"github.com/BambooTuna/quest-market/backend/dao"
+	"github.com/BambooTuna/quest-market/backend/lib/session"
+	"github.com/BambooTuna/quest-market/backend/model/account"
+	"github.com/BambooTuna/quest-market/backend/usecase"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/gorp.v1"
 	"log"
@@ -15,6 +16,7 @@ import (
 )
 
 func main() {
+	apiVersion := "/v1"
 	db, err := sql.Open("mysql", "BambooTuna:pass@tcp(127.0.0.1:3306)/market")
 	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbSession.AddTableWithName(account.AccountCredentials{}, "account_credentials").SetKeys(false, "account_id")
@@ -33,9 +35,13 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.POST("/signup", authenticationController.SignUp())
-	r.POST("/signin", authenticationController.SignIn())
-	r.GET("/health", authenticationController.Health())
+	r.Use(static.Serve("/", static.LocalFile("./dist", false)))
+	r.POST(apiVersion+"/signup", authenticationController.SignUp())
+	r.POST(apiVersion+"/signin", authenticationController.SignIn())
+	r.GET(apiVersion+"/health", authenticationController.Health())
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./dist/index.html")
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {

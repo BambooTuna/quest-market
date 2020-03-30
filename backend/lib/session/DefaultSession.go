@@ -1,8 +1,8 @@
 package session
 
 import (
-	"github.com/BambooTuna/quest-market/json"
-	"github.com/BambooTuna/quest-market/settings"
+	"github.com/BambooTuna/quest-market/backend/json"
+	"github.com/BambooTuna/quest-market/backend/settings"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
