@@ -51,3 +51,9 @@ func (c *AuthenticationController) Health() func(*gin.Context) {
 		ctx.Status(http.StatusOK)
 	})
 }
+
+func (c *AuthenticationController) SignOut() func(*gin.Context) {
+	return c.Session.InvalidateSession(func(ctx *gin.Context) {
+		ctx.Status(http.StatusOK)
+	})
+}

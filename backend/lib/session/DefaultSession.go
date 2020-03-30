@@ -44,26 +44,47 @@ func (s DefaultSession) SetSession(f func(*gin.Context) (*string, error)) func(*
 
 func (s DefaultSession) RequiredSession(f func(*gin.Context, *string)) func(*gin.Context) {
 	return func(c *gin.Context) {
-		tokenString := c.GetHeader(s.Settings.AuthHeaderName)
-		if tokenString == "" {
-			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: "please set session token to header"})
+		claimsId := s.ParseClaimsId(c)
+		if claimsId == "" {
 			return
 		}
-
-		var claims jwt.StandardClaims
-		_, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(s.Settings.Secret), nil
-		})
-		if err != nil {
-			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
-			return
-		}
-
-		token, err := s.Dao.Find(claims.Id)
+		token, err := s.Dao.Find(claimsId)
 		if err != nil {
 			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
 		f(c, token)
 	}
+}
+
+func (s DefaultSession) InvalidateSession(f func(*gin.Context)) func(*gin.Context) {
+	return s.RequiredSession(func(c *gin.Context, i *string) {
+		claimsId := s.ParseClaimsId(c)
+		if claimsId == "" {
+			return
+		}
+
+		if err := s.Dao.Remove(claimsId); err != nil {
+			c.JSON(http.StatusInternalServerError, json.ErrorMessageJson{Message: err.Error()})
+			return
+		}
+		f(c)
+	})
+}
+
+func (s DefaultSession) ParseClaimsId(c *gin.Context) string {
+	tokenString := c.GetHeader(s.Settings.AuthHeaderName)
+	if tokenString == "" {
+		c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: "please set session token to header"})
+		return ""
+	}
+	var claims jwt.StandardClaims
+	_, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.Settings.Secret), nil
+	})
+	if err != nil {
+		c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
+		return ""
+	}
+	return claims.Id
 }

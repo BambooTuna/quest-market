@@ -64,7 +64,7 @@ func main() {
 	r.POST(apiVersion+"/signup", authenticationController.SignUp())
 	r.POST(apiVersion+"/signin", authenticationController.SignIn())
 	r.GET(apiVersion+"/health", authenticationController.Health())
-	r.DELETE(apiVersion+"/logout", UnimplementedRoute)
+	r.DELETE(apiVersion+"/logout", authenticationController.SignOut())
 
 	r.GET(apiVersion+"/products", UnimplementedRoute)
 	r.GET(apiVersion+"/product/:displayId", UnimplementedRoute)
