@@ -50,7 +50,7 @@ func (s DefaultSession) SetSession(f func(*gin.Context) (*string, error)) func(*
 	}
 }
 
-func (s DefaultSession) RequiredSession(f func(*gin.Context, string)) func(*gin.Context) {
+func (s DefaultSession) RequiredSession(f func(*gin.Context, *string)) func(*gin.Context) {
 	return func(c *gin.Context) {
 		id := c.GetHeader(s.Settings.AuthHeaderName)
 		token, err := s.Dao.Find(id)
@@ -58,6 +58,6 @@ func (s DefaultSession) RequiredSession(f func(*gin.Context, string)) func(*gin.
 			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
-		f(c, *token)
+		f(c, token)
 	}
 }

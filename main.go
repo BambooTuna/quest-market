@@ -24,11 +24,11 @@ func main() {
 	}
 
 	sessionDao := session.InmemorySessionStorageDao{Data: make(map[string]string)}
-	session := session.DefaultSession{Dao: sessionDao}
+	authSession := session.DefaultSession{Dao: sessionDao, Settings: session.DefaultSessionSettings("1234567890asdfghjkl")}
 	accountCredentialsDao := dao.AccountCredentialsDaoImpl{DBSession: dbSession}
 	authenticationUseCase := usecase.AuthenticationUseCase{AccountCredentialsDao: accountCredentialsDao}
 	authenticationController := controller.AuthenticationController{
-		Session:               session,
+		Session:               authSession,
 		AuthenticationUseCase: authenticationUseCase,
 	}
 
