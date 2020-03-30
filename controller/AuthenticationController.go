@@ -3,8 +3,10 @@ package controller
 import (
 	"github.com/BambooTuna/quest-market/command"
 	"github.com/BambooTuna/quest-market/lib/session"
+	"github.com/BambooTuna/quest-market/model"
 	"github.com/BambooTuna/quest-market/usecase"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type AuthenticationController struct {
@@ -37,5 +39,13 @@ func (c *AuthenticationController) SignIn() func(*gin.Context) {
 			return nil, err
 		}
 		return &accountCredentials.AccountId, nil
+	})
+}
+
+func (c *AuthenticationController) Health() func(*gin.Context) {
+	return c.Session.RequiredSession(func(ctx *gin.Context, token *string) {
+		accountSessionToken := model.DecodeToAccountSessionToken(*token)
+		println("AccountId: " + accountSessionToken.AccountId)
+		ctx.Status(http.StatusOK)
 	})
 }

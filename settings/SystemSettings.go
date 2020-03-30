@@ -1,8 +1,10 @@
 package settings
 
 import (
+	"crypto/sha256"
+	"errors"
+	"fmt"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func GenerateUUID() (string, error) {
@@ -13,13 +15,13 @@ func GenerateUUID() (string, error) {
 }
 
 func PasswordHash(plainPass string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(plainPass), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hash), err
+	return fmt.Sprintf("%x", sha256.Sum256([]byte(plainPass))), nil
 }
 
 func VerifyPassword(hash, s string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(s))
+	if hash == fmt.Sprintf("%x", sha256.Sum256([]byte(s))) {
+		return nil
+	} else {
+		return errors.New("forbidden")
+	}
 }

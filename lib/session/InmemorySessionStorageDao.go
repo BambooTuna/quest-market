@@ -11,11 +11,13 @@ type InmemorySessionStorageDao struct {
 
 func (r InmemorySessionStorageDao) Store(key, value string, expiration time.Duration) error {
 	r.Data[key] = value
+	println(key, value)
 	return nil
 }
 
 func (r InmemorySessionStorageDao) Find(key string) (*string, error) {
 	result, exist := r.Data[key]
+	println(key)
 	if !exist {
 		return nil, &syntax.Error{Code: syntax.ErrInternalError, Expr: ""}
 	}

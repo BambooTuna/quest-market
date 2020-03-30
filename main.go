@@ -18,7 +18,7 @@ func main() {
 	db, err := sql.Open("mysql", "BambooTuna:pass@tcp(127.0.0.1:3306)/market")
 	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbSession.AddTableWithName(account.AccountCredentials{}, "account_credentials").SetKeys(false, "account_id")
-	defer log.Fatal(dbSession.Db.Close())
+	defer dbSession.Db.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,6 +35,7 @@ func main() {
 	r := gin.Default()
 	r.POST("/signup", authenticationController.SignUp())
 	r.POST("/signin", authenticationController.SignIn())
+	r.GET("/health", authenticationController.Health())
 
 	port := os.Getenv("PORT")
 	if port == "" {
