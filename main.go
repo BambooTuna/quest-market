@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/BambooTuna/quest-market/backend/controller"
 	"github.com/BambooTuna/quest-market/backend/dao"
+	"github.com/BambooTuna/quest-market/backend/json"
 	"github.com/BambooTuna/quest-market/backend/lib/session"
 	"github.com/BambooTuna/quest-market/backend/model/account"
 	"github.com/BambooTuna/quest-market/backend/settings"
@@ -14,6 +15,7 @@ import (
 	"github.com/go-redis/redis/v7"
 	"gopkg.in/gorp.v1"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -58,9 +60,21 @@ func main() {
 
 	r := gin.Default()
 	r.Use(static.Serve("/", static.LocalFile("./front/dist", false)))
+
 	r.POST(apiVersion+"/signup", authenticationController.SignUp())
 	r.POST(apiVersion+"/signin", authenticationController.SignIn())
 	r.GET(apiVersion+"/health", authenticationController.Health())
+	r.DELETE(apiVersion+"/logout", UnimplementedRoute)
+
+	r.GET(apiVersion+"/products", UnimplementedRoute)
+	r.GET(apiVersion+"/product/:displayId", UnimplementedRoute)
+	r.GET(apiVersion+"/products/self", UnimplementedRoute)
+	r.POST(apiVersion+"/product", UnimplementedRoute)
+	r.PUT(apiVersion+"/product/:displayId", UnimplementedRoute)
+
+	r.POST(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
+	r.GET(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
+
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./front/index.html")
 	})
@@ -72,4 +86,8 @@ func main() {
 	}
 
 	log.Fatal(r.Run(fmt.Sprintf(":%s", port)))
+}
+
+func UnimplementedRoute(ctx *gin.Context) {
+	ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: "UnimplementedRoute"})
 }

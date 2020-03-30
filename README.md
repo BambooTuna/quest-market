@@ -17,7 +17,7 @@ $ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/health -i
 
 ## ローカル環境構築
 ```bash
-$ VUE_APP_SERVER_ENDPOINT=http://localhost:8080 npm run build
+$ VUE_APP_SERVER_ENDPOINT=http://localhost:8080/v1 npm run build
 
 $ go mod init
 $ go get -v -t -d ./...
