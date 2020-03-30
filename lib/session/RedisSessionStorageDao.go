@@ -1,9 +1,11 @@
 package session
 
+import "time"
+
 type RedisSessionStorageDao struct {
 }
 
-func (r RedisSessionStorageDao) Store(key, value string) error {
+func (r RedisSessionStorageDao) Store(key, value string, expiration time.Duration) error {
 	// TODO
 	return nil
 }

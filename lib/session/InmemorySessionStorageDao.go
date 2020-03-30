@@ -2,13 +2,14 @@ package session
 
 import (
 	"regexp/syntax"
+	"time"
 )
 
 type InmemorySessionStorageDao struct {
 	Data map[string]string
 }
 
-func (r InmemorySessionStorageDao) Store(key, value string) error {
+func (r InmemorySessionStorageDao) Store(key, value string, expiration time.Duration) error {
 	r.Data[key] = value
 	return nil
 }
