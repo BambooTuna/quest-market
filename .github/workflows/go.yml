@@ -46,8 +46,6 @@ jobs:
 
     - name: GAE deploy
       run: |
-        ls
-        ls ./front
         sudo apt-get install google-cloud-sdk-app-engine-go
         echo ${GCLOUD_SERVICE_KEY} | base64 -d > ./service_key.json
         echo 'github-actions@${PROJECT_NAME}.iam.gserviceaccount.com' | gcloud auth activate-service-account --key-file ./service_key.json
