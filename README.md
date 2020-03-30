@@ -5,6 +5,7 @@
 ```bash
 $ curl -X POST -H "Content-Type: application/json" -d '{"mail":"bambootuna@gmail.com","pass":"pass"}' localhost:8080/signup -i
 $ curl -X POST -H "Content-Type: application/json" -d '{"mail":"bambootuna@gmail.com","pass":"pass"}' localhost:8080/signin -i
+// HeadreName: Set-AuthorizationにSessionTokenがセットされている
 
 
 $ export SESSION_TOKEN=[~~~]

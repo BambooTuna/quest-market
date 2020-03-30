@@ -24,7 +24,8 @@ func (c *AuthenticationController) SignUp() func(*gin.Context) {
 		if err != nil {
 			return nil, err
 		}
-		return &accountCredentials.AccountId, nil
+		r := model.AccountSessionToken{AccountId: accountCredentials.AccountId, Cooperation: ""}.ToString()
+		return &r, nil
 	})
 }
 
@@ -38,14 +39,15 @@ func (c *AuthenticationController) SignIn() func(*gin.Context) {
 		if err != nil {
 			return nil, err
 		}
-		return &accountCredentials.AccountId, nil
+		r := model.AccountSessionToken{AccountId: accountCredentials.AccountId, Cooperation: ""}.ToString()
+		return &r, nil
 	})
 }
 
 func (c *AuthenticationController) Health() func(*gin.Context) {
 	return c.Session.RequiredSession(func(ctx *gin.Context, token *string) {
-		accountSessionToken := model.DecodeToAccountSessionToken(*token)
-		println("AccountId: " + accountSessionToken.AccountId)
+		//accountSessionToken := model.DecodeToAccountSessionToken(*token)
+		//println("AccountId: " + accountSessionToken.AccountId)
 		ctx.Status(http.StatusOK)
 	})
 }

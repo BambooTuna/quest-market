@@ -9,7 +9,7 @@ type AccountSessionToken struct {
 	Cooperation string `json:"cooperation"`
 }
 
-func (a AccountSessionToken) toString() string {
+func (a AccountSessionToken) ToString() string {
 	json, err := json.Marshal(a)
 	if err != nil {
 		return ""

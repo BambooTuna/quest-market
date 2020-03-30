@@ -8,11 +8,6 @@ import (
 	"net/http"
 )
 
-type CustomClaims struct {
-	Data string `json:"data"`
-	jwt.StandardClaims
-}
-
 type DefaultSession struct {
 	Dao      SessionStorageDao
 	Settings SessionSettings
@@ -31,10 +26,7 @@ func (s DefaultSession) SetSession(f func(*gin.Context) (*string, error)) func(*
 			return
 		}
 
-		token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &CustomClaims{
-			Data:           *plainToken,
-			StandardClaims: jwt.StandardClaims{Id: id},
-		})
+		token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &jwt.StandardClaims{Id: id})
 
 		SignedToken, err := token.SignedString([]byte(s.Settings.Secret))
 		if err != nil {
@@ -42,7 +34,7 @@ func (s DefaultSession) SetSession(f func(*gin.Context) (*string, error)) func(*
 			return
 		}
 
-		if err := s.Dao.Store(id, SignedToken, s.Settings.ExpirationDate); err != nil {
+		if err := s.Dao.Store(id, *plainToken, s.Settings.ExpirationDate); err != nil {
 			c.JSON(http.StatusInternalServerError, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
@@ -52,12 +44,22 @@ func (s DefaultSession) SetSession(f func(*gin.Context) (*string, error)) func(*
 
 func (s DefaultSession) RequiredSession(f func(*gin.Context, *string)) func(*gin.Context) {
 	return func(c *gin.Context) {
-		id := c.GetHeader(s.Settings.AuthHeaderName)
-		if id == "" {
+		tokenString := c.GetHeader(s.Settings.AuthHeaderName)
+		if tokenString == "" {
 			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: "please set session token to header"})
 			return
 		}
-		token, err := s.Dao.Find(id)
+
+		var claims jwt.StandardClaims
+		_, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(s.Settings.Secret), nil
+		})
+		if err != nil {
+			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
+			return
+		}
+
+		token, err := s.Dao.Find(claims.Id)
 		if err != nil {
 			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
 			return
