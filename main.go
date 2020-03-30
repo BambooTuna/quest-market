@@ -1,4 +1,4 @@
-package quest_market
+package main
 
 import (
 	"database/sql"

@@ -11,3 +11,13 @@ $ curl -X POST -H "Content-Type: application/json" -d '{"mail":"bambootuna@gmail
 $ export SESSION_TOKEN=[~~~]
 $ curl -X GET -H "Authorization: $SESSION_TOKEN" localhost:8080/health -i
 ```
+
+
+## ローカル環境構築
+```bash
+$ VUE_APP_SERVER_ENDPOINT=http://localhost:8080 npm run build
+
+$ go mod init
+$ go get -v -t -d ./...
+$ go run main.go
+```
