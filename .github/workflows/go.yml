@@ -29,7 +29,7 @@ jobs:
         cd ../
       env:
         NODE_ENV: development
-        VUE_APP_SERVER_ENDPOINT: https://market-114.appspot.com
+        VUE_APP_SERVER_ENDPOINT: https://market-114.appspot.com/v1
 
     - name: Set up Go 1.13
       uses: actions/setup-go@v1

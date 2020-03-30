@@ -17,7 +17,12 @@ import (
 
 func main() {
 	apiVersion := "/v1"
-	db, err := sql.Open("mysql", "BambooTuna:pass@tcp(127.0.0.1:3306)/market")
+
+	dataSourceName := os.Getenv("MYSQL_SOURCE")
+	if dataSourceName == "" {
+		dataSourceName = "BambooTuna:pass@tcp(127.0.0.1:3306)/market"
+	}
+	db, err := sql.Open("mysql", dataSourceName)
 	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbSession.AddTableWithName(account.AccountCredentials{}, "account_credentials").SetKeys(false, "account_id")
 	defer dbSession.Db.Close()

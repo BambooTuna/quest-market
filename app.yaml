@@ -19,3 +19,4 @@ vpc_access_connector:
 
 env_variables:
   PORT: 8080
+  MYSQL_SOURCE: BambooTuna:pass@tcp(10.128.0.2:3306)/market
