@@ -35,12 +35,12 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.Use(static.Serve("/", static.LocalFile("./dist", false)))
+	r.Use(static.Serve("/", static.LocalFile("./front/dist", false)))
 	r.POST(apiVersion+"/signup", authenticationController.SignUp())
 	r.POST(apiVersion+"/signin", authenticationController.SignIn())
 	r.GET(apiVersion+"/health", authenticationController.Health())
 	r.NoRoute(func(c *gin.Context) {
-		c.File("./dist/index.html")
+		c.File("./front/index.html")
 	})
 
 	port := os.Getenv("PORT")

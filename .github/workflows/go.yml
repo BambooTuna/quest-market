@@ -9,16 +9,19 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    steps:
+    strategy:
+      matrix:
+        node-version: [10.16.0]
 
+    steps:
     - name: Set up Go 1.13
       uses: actions/setup-go@v1
       with:
         go-version: 1.13
       id: go
-
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
+
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
@@ -26,6 +29,21 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build
+      run: |
+        cd front
+        npm install
+        npm run build
+        cd ../
+      env:
+        NODE_ENV: development
+        VUE_APP_SERVER_ENDPOINT: https://market-114.appspot.com
+
     - name: GAE deploy
       run: |
         sudo apt-get install google-cloud-sdk-app-engine-go
