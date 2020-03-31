@@ -23,7 +23,7 @@ import (
 func main() {
 	apiVersion := "/v1"
 
-	mysqlDataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	mysqlDataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		settings.FetchEnvValue("MYSQL_USER", "BambooTuna"),
 		settings.FetchEnvValue("MYSQL_PASS", "pass"),
 		settings.FetchEnvValue("MYSQL_HOST", "127.0.0.1"),
