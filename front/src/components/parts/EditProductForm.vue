@@ -16,7 +16,7 @@
         </tr>
         <tr>
           <th>価格</th>
-          <td><input type="number" v-model="item.requestPrice" placeholder="価格" class="price-input"></td>
+          <td><input type="number" v-model.number="item.requestPrice" placeholder="価格" class="price-input"></td>
         </tr>
         </tbody>
       </table><br><br><br>

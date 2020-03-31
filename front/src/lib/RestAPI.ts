@@ -34,10 +34,7 @@ export default class RestAPI {
       url: this.host + '/signup',
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
-      data: {
-        mail: payload.mail,
-        pass: payload.pass
-      }
+      data: payload
     })
       .then((res: AxiosResponse) => this.storeSessionToken(res.headers['set-authorization']))
       .catch((e: AxiosError) => this.errorHandler<string>(e))
@@ -48,10 +45,7 @@ export default class RestAPI {
       url: this.host + '/signin',
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
-      data: {
-        mail: payload.mail,
-        pass: payload.pass
-      }
+      data: payload
     })
       .then((res: AxiosResponse) => this.storeSessionToken(res.headers['set-authorization']))
       .catch((e: AxiosError) => this.errorHandler<string>(e))
@@ -108,10 +102,7 @@ export default class RestAPI {
     return axios({
       url: this.host + '/products',
       method: 'get',
-      params: {
-        limit: params.limit,
-        page: params.page
-      }
+      params: params
     })
       .then((res: AxiosResponse) => {
         const list: Array<ProductDetailResponse> = res.data
@@ -169,12 +160,7 @@ export default class RestAPI {
         url: this.host + '/product',
         method: 'post',
         headers: { Authorization: sessionToken },
-        data: {
-          title: data.title,
-          detail: data.detail,
-          price: data.price,
-          state: data.state
-        }
+        data: data
       })
         .then((res: AxiosResponse) => res.data)
         .catch((e: AxiosError) => this.errorHandler<string>(e))
@@ -187,12 +173,7 @@ export default class RestAPI {
         url: this.host + '/product/' + productId,
         method: 'put',
         headers: { Authorization: sessionToken },
-        data: {
-          title: data.title,
-          detail: data.detail,
-          price: data.price,
-          state: data.state
-        }
+        data: data
       })
         .then((res: AxiosResponse) => res.data)
         .catch((e: AxiosError) => this.errorHandler<string>(e))
