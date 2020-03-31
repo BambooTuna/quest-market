@@ -25,8 +25,12 @@ func ValidateError(fieldName string, errType string) CustomError {
 	case "email":
 		errorMessage = "がメールアドレスの形式になっていません"
 	case "min":
-		errorMessage = "は１文字以上入力してください"
+		errorMessage = "は１以上で入力してください"
 	case "max":
+		errorMessage = "が大きすぎます"
+	case "gte":
+		errorMessage = "が短すぎます"
+	case "lte":
 		errorMessage = "が長すぎます"
 	case "required":
 		errorMessage = "を入力してください"
