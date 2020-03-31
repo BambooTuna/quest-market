@@ -52,28 +52,36 @@ func main() {
 
 	authSession := session.DefaultSession{Dao: sessionDao, Settings: session.DefaultSessionSettings(settings.FetchEnvValue("SESSION_SECRET", "1234567890asdfghjkl"))}
 	accountCredentialsDao := dao.AccountCredentialsDaoImpl{DBSession: dbSession}
+	productDetailsDao := dao.ProductDetailsDaoImpl{DBSession: dbSession}
+
 	authenticationUseCase := usecase.AuthenticationUseCase{AccountCredentialsDao: accountCredentialsDao}
+	productDetailsUseCase := usecase.ProductDetailsUseCase{ProductDetailsDao: productDetailsDao}
+
 	authenticationController := controller.AuthenticationController{
 		Session:               authSession,
 		AuthenticationUseCase: authenticationUseCase,
+	}
+	productController := controller.ProductController{
+		Session:               authSession,
+		ProductDetailsUseCase: productDetailsUseCase,
 	}
 
 	r := gin.Default()
 	r.Use(static.Serve("/", static.LocalFile("./front/dist", false)))
 
-	r.POST(apiVersion+"/signup", authenticationController.SignUp())
-	r.POST(apiVersion+"/signin", authenticationController.SignIn())
-	r.GET(apiVersion+"/health", authenticationController.Health())
-	r.DELETE(apiVersion+"/logout", authenticationController.SignOut())
+	r.POST(apiVersion+"/signup", authenticationController.SignUpRoute())
+	r.POST(apiVersion+"/signin", authenticationController.SignInRoute())
+	r.GET(apiVersion+"/health", authenticationController.HealthRoute())
+	r.DELETE(apiVersion+"/logout", authenticationController.SignOutRoute())
 
-	r.GET(apiVersion+"/products", UnimplementedRoute)
-	r.GET(apiVersion+"/product/:displayId", UnimplementedRoute)
-	r.GET(apiVersion+"/products/self", UnimplementedRoute)
-	r.POST(apiVersion+"/product", UnimplementedRoute)
-	r.PUT(apiVersion+"/product/:displayId", UnimplementedRoute)
+	r.GET(apiVersion+"/products", productController.GetOpenProductsRoute())
+	r.GET(apiVersion+"/product/:productId", productController.GetProductDetailsRoute())
+	r.GET(apiVersion+"/products/self", productController.GetMyProductListRoute())
+	r.POST(apiVersion+"/product", productController.ExhibitionRoute())
+	r.PUT(apiVersion+"/product/:productId", productController.UpdateProductDetailsRoute())
 
-	r.POST(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
-	r.GET(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
+	//r.POST(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
+	//r.GET(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./front/index.html")

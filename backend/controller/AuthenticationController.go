@@ -14,7 +14,7 @@ type AuthenticationController struct {
 	AuthenticationUseCase usecase.AuthenticationUseCase
 }
 
-func (c *AuthenticationController) SignUp() func(*gin.Context) {
+func (c *AuthenticationController) SignUpRoute() func(*gin.Context) {
 	return c.Session.SetSession(func(ctx *gin.Context) (*string, error) {
 		var signUpRequestCommand command.SignUpRequestCommand
 		if err := ctx.BindJSON(&signUpRequestCommand); err != nil {
@@ -25,11 +25,12 @@ func (c *AuthenticationController) SignUp() func(*gin.Context) {
 			return nil, err
 		}
 		r := model.AccountSessionToken{AccountId: accountCredentials.AccountId, Cooperation: ""}.ToString()
+		ctx.Status(http.StatusOK)
 		return &r, nil
 	})
 }
 
-func (c *AuthenticationController) SignIn() func(*gin.Context) {
+func (c *AuthenticationController) SignInRoute() func(*gin.Context) {
 	return c.Session.SetSession(func(ctx *gin.Context) (*string, error) {
 		var signInRequestCommand command.SignInRequestCommand
 		if err := ctx.BindJSON(&signInRequestCommand); err != nil {
@@ -40,11 +41,12 @@ func (c *AuthenticationController) SignIn() func(*gin.Context) {
 			return nil, err
 		}
 		r := model.AccountSessionToken{AccountId: accountCredentials.AccountId, Cooperation: ""}.ToString()
+		ctx.Status(http.StatusOK)
 		return &r, nil
 	})
 }
 
-func (c *AuthenticationController) Health() func(*gin.Context) {
+func (c *AuthenticationController) HealthRoute() func(*gin.Context) {
 	return c.Session.RequiredSession(func(ctx *gin.Context, token *string) {
 		//accountSessionToken := model.DecodeToAccountSessionToken(*token)
 		//println("AccountId: " + accountSessionToken.AccountId)
@@ -52,7 +54,7 @@ func (c *AuthenticationController) Health() func(*gin.Context) {
 	})
 }
 
-func (c *AuthenticationController) SignOut() func(*gin.Context) {
+func (c *AuthenticationController) SignOutRoute() func(*gin.Context) {
 	return c.Session.InvalidateSession(func(ctx *gin.Context) {
 		ctx.Status(http.StatusOK)
 	})

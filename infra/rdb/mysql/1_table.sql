@@ -20,7 +20,7 @@ CREATE TABLE `linked_user_credentials` (
     UNIQUE KEY (`mail`)
 );
 
-CREATE TABLE `product_display` (
+CREATE TABLE `product_details` (
     `id` VARCHAR(255) NOT NULL,
     `title` VARCHAR(255) NOT NULL,
     `detail` VARCHAR(255) NOT NULL,

@@ -57,6 +57,30 @@ func (s DefaultSession) RequiredSession(f func(*gin.Context, *string)) func(*gin
 	}
 }
 
+func (s DefaultSession) OptionalRequiredSession(f func(*gin.Context, *string)) func(*gin.Context) {
+	return func(c *gin.Context) {
+		tokenString := c.GetHeader(s.Settings.AuthHeaderName)
+		if tokenString == "" {
+			f(c, nil)
+			return
+		}
+		var claims jwt.StandardClaims
+		_, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(s.Settings.Secret), nil
+		})
+		if err != nil {
+			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
+			return
+		}
+		token, err := s.Dao.Find(claims.Id)
+		if err != nil {
+			c.JSON(http.StatusForbidden, json.ErrorMessageJson{Message: err.Error()})
+			return
+		}
+		f(c, token)
+	}
+}
+
 func (s DefaultSession) InvalidateSession(f func(*gin.Context)) func(*gin.Context) {
 	return s.RequiredSession(func(c *gin.Context, i *string) {
 		claimsId := s.ParseClaimsId(c)
