@@ -17,7 +17,7 @@
           <button type="submit" @click="signinEvent()" class="button--signin">ログイン</button>
         </div>
       </section>
-      <section class="cooperation" v-if="!isLogin">
+      <section class="cooperation" v-if="false">
         <h5>SNS連携</h5>
         <div class="links">
           <button type="submit" @click="lineCooperationEvent()" class="button--cooperation">Line</button>

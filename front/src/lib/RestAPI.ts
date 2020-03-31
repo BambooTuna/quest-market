@@ -108,7 +108,10 @@ export default class RestAPI {
     return axios({
       url: this.host + '/products',
       method: 'get',
-      params: params
+      params: {
+        limit: params.limit,
+        page: params.page
+      }
     })
       .then((res: AxiosResponse) => {
         const list: Array<ProductDetailResponse> = res.data
@@ -166,7 +169,12 @@ export default class RestAPI {
         url: this.host + '/product',
         method: 'post',
         headers: { Authorization: sessionToken },
-        data: data
+        data: {
+          title: data.title,
+          detail: data.detail,
+          price: data.price,
+          state: data.state
+        }
       })
         .then((res: AxiosResponse) => res.data)
         .catch((e: AxiosError) => this.errorHandler<string>(e))
@@ -179,7 +187,12 @@ export default class RestAPI {
         url: this.host + '/product/' + productId,
         method: 'put',
         headers: { Authorization: sessionToken },
-        data: data
+        data: {
+          title: data.title,
+          detail: data.detail,
+          price: data.price,
+          state: data.state
+        }
       })
         .then((res: AxiosResponse) => res.data)
         .catch((e: AxiosError) => this.errorHandler<string>(e))

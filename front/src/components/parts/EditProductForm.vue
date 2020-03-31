@@ -21,7 +21,7 @@
         </tbody>
       </table><br><br><br>
       <button @click="onClick('open')">出品</button><button @click="onClick('draft')">下書き</button><br>
-      <button v-show="!isNew" @click="onClick('closed')">削除</button>
+      <button v-show="!isNew" @click="onClick('deleted')">削除</button>
     </WaitLoading>
   </div>
 </template>
