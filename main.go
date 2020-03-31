@@ -8,6 +8,7 @@ import (
 	"github.com/BambooTuna/quest-market/backend/json"
 	"github.com/BambooTuna/quest-market/backend/lib/session"
 	"github.com/BambooTuna/quest-market/backend/model/account"
+	"github.com/BambooTuna/quest-market/backend/model/goods"
 	"github.com/BambooTuna/quest-market/backend/settings"
 	"github.com/BambooTuna/quest-market/backend/usecase"
 	"github.com/gin-contrib/static"
@@ -32,6 +33,7 @@ func main() {
 	db, err := sql.Open("mysql", mysqlDataSourceName)
 	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbSession.AddTableWithName(account.AccountCredentials{}, "account_credentials").SetKeys(false, "account_id")
+	dbSession.AddTableWithName(goods.ProductDetails{}, "product_details").SetKeys(false, "product_id")
 	defer dbSession.Db.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -84,7 +86,7 @@ func main() {
 	//r.GET(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
 
 	r.NoRoute(func(c *gin.Context) {
-		c.File("./front/index.html")
+		c.File("./front/dist/index.html")
 	})
 
 	port := os.Getenv("PORT")

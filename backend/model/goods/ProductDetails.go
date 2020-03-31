@@ -6,12 +6,12 @@ import (
 )
 
 type ProductDetails struct {
-	ProductId   string `db:"product_id"`
-	Title       string `db:"title"`
-	Detail      string `db:"detail"`
-	Price       int64  `db:"price"`
-	PresenterId string `db:"presenter_id"`
-	State       string `db:"state"`
+	ProductId   string `db:"product_id" json:"id"`
+	Title       string `db:"title" json:"productTitle"`
+	Detail      string `db:"detail" json:"productDetail"`
+	Price       int64  `db:"price" json:"requestPrice"`
+	PresenterId string `db:"presenter_id" json:"presenterId"`
+	State       string `db:"state" json:"state"`
 }
 
 func GenerateProductDetails(title, detail, presenterId, state string, price int64) (*ProductDetails, error) {

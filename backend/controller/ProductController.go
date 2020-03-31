@@ -51,11 +51,6 @@ func (c *ProductController) GetOpenProductsRoute() func(*gin.Context) {
 func (c *ProductController) GetMyProductListRoute() func(*gin.Context) {
 	return c.Session.RequiredSession(func(ctx *gin.Context, token *string) {
 		accountSessionToken := model.DecodeToAccountSessionToken(*token)
-		var exhibitionRequestJson json.ExhibitionRequestJson
-		if err := ctx.BindJSON(&exhibitionRequestJson); err != nil {
-			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
-			return
-		}
 		productDetails, err := c.ProductDetailsUseCase.GetMyExistingProducts(ctx, accountSessionToken.AccountId)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
@@ -66,13 +61,15 @@ func (c *ProductController) GetMyProductListRoute() func(*gin.Context) {
 }
 
 func (c *ProductController) ExhibitionRoute() func(*gin.Context) {
-	return c.Session.RequiredSession(func(ctx *gin.Context, i *string) {
+	return c.Session.RequiredSession(func(ctx *gin.Context, token *string) {
 		var exhibitionRequestJson json.ExhibitionRequestJson
+
+		accountSessionToken := model.DecodeToAccountSessionToken(*token)
 		if err := ctx.BindJSON(&exhibitionRequestJson); err != nil {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
-		command := exhibitionRequestJson.GenerateExhibitionCommand(*i)
+		command := exhibitionRequestJson.GenerateExhibitionCommand(accountSessionToken.AccountId)
 		productDetails, err := c.ProductDetailsUseCase.Exhibition(ctx, &command)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})

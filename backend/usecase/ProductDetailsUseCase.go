@@ -37,7 +37,7 @@ func (productDetailsUseCase *ProductDetailsUseCase) GetPublicProductDetails(ctx 
 }
 
 func (productDetailsUseCase *ProductDetailsUseCase) GetPrivateProductDetails(ctx context.Context, productId string, practitionerId string) (*goods.ProductDetails, error) {
-	if practitionerId != "" {
+	if practitionerId == "" {
 		return nil, errors.New("practitionerId is empty")
 	}
 
