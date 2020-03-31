@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/BambooTuna/quest-market/backend/command"
 	"github.com/BambooTuna/quest-market/backend/dao"
+	error2 "github.com/BambooTuna/quest-market/backend/error"
 	"github.com/BambooTuna/quest-market/backend/model/account"
 )
 
@@ -18,20 +19,20 @@ func (authenticationUseCase *AuthenticationUseCase) SignUp(ctx context.Context, 
 	}
 
 	if err := authenticationUseCase.AccountCredentialsDao.Insert(ctx, accountCredentials); err != nil {
-		return nil, err
+		return nil, error2.Error(error2.DuplicateRegistration)
 	}
-	return accountCredentials, err
+	return accountCredentials, nil
 }
 
 func (authenticationUseCase *AuthenticationUseCase) SignIn(ctx context.Context, c *command.SignInRequestCommand) (*account.AccountCredentials, error) {
 	record, err := authenticationUseCase.AccountCredentialsDao.ResolveByMail(ctx, c.Mail)
 	if err != nil {
-		return nil, err
+		return nil, error2.Error(error2.AccountNotFound)
 	}
 
 	accountCredentials, err := record.Authentication(c.Password)
 	if err != nil {
-		return nil, err
+		return nil, error2.Error(error2.AuthenticationFailed)
 	}
-	return accountCredentials, err
+	return accountCredentials, nil
 }

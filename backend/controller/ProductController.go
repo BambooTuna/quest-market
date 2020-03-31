@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/BambooTuna/quest-market/backend/command"
+	error2 "github.com/BambooTuna/quest-market/backend/error"
 	"github.com/BambooTuna/quest-market/backend/json"
 	"github.com/BambooTuna/quest-market/backend/lib/session"
 	"github.com/BambooTuna/quest-market/backend/model"
@@ -33,7 +34,7 @@ func (c *ProductController) GetProductDetailsRoute() func(*gin.Context) {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
-		ctx.JSON(http.StatusOK, productDetails)
+		ctx.JSON(http.StatusOK, json.ConvertToProductDetailsResponseJson(*productDetails))
 	})
 }
 
@@ -44,7 +45,7 @@ func (c *ProductController) GetOpenProductsRoute() func(*gin.Context) {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
-		ctx.JSON(http.StatusOK, productDetails)
+		ctx.JSON(http.StatusOK, json.ConvertToProductDetailsListResponseJson(productDetails))
 	}
 }
 
@@ -56,7 +57,7 @@ func (c *ProductController) GetMyProductListRoute() func(*gin.Context) {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
-		ctx.JSON(http.StatusOK, productDetails)
+		ctx.JSON(http.StatusOK, json.ConvertToProductDetailsListResponseJson(productDetails))
 	})
 }
 
@@ -66,7 +67,7 @@ func (c *ProductController) ExhibitionRoute() func(*gin.Context) {
 
 		accountSessionToken := model.DecodeToAccountSessionToken(*token)
 		if err := ctx.BindJSON(&exhibitionRequestJson); err != nil {
-			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
+			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: error2.Error(error2.BindJSONFailed).Error()})
 			return
 		}
 		command := exhibitionRequestJson.GenerateExhibitionCommand(accountSessionToken.AccountId)
@@ -86,7 +87,7 @@ func (c *ProductController) UpdateProductDetailsRoute() func(*gin.Context) {
 		accountSessionToken := model.DecodeToAccountSessionToken(*token)
 		var exhibitionRequestJson json.ExhibitionRequestJson
 		if err := ctx.BindJSON(&exhibitionRequestJson); err != nil {
-			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
+			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: error2.Error(error2.BindJSONFailed).Error()})
 			return
 		}
 		command := command.UpdateProductCommand{ProductId: productId, PractitionerId: accountSessionToken.AccountId, ProductDetail: exhibitionRequestJson.GenerateProductDetailCommand()}
@@ -95,6 +96,6 @@ func (c *ProductController) UpdateProductDetailsRoute() func(*gin.Context) {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 			return
 		}
-		ctx.JSON(http.StatusOK, productDetails)
+		ctx.JSON(http.StatusOK, json.ConvertToProductDetailsResponseJson(*productDetails))
 	})
 }
