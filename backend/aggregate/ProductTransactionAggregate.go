@@ -1,24 +1,31 @@
 package aggregate
 
 import (
+	"errors"
 	"github.com/BambooTuna/quest-market/backend/model/transaction"
 )
 
 type ProductTransactionAggregate struct {
-	ProductTransactions map[string]*transaction.ProductTransaction
+	ProductId   string
+	Transaction *transaction.ProductTransaction
 }
 
-func (p *ProductTransactionAggregate) Recovery(data []*transaction.ProductTransaction) []*transaction.ProductTransaction {
+func (p *ProductTransactionAggregate) ReceiveRecover(data []*transaction.ProductTransaction) {
 	for _, v := range data {
-		if value, ok := p.ProductTransactions[v.ProductId]; ok {
-			p.ProductTransactions[v.ProductId] = value.Override(v)
-		} else {
-			p.ProductTransactions[v.ProductId] = v
-		}
+		p.SendTransaction(v)
 	}
-	var result []*transaction.ProductTransaction
-	for _, value := range p.ProductTransactions {
-		result = append(result, value)
+}
+
+func (p *ProductTransactionAggregate) SendTransaction(t *transaction.ProductTransaction) error {
+	var transactionType *transaction.ProductTransactionType
+	if p.Transaction != nil {
+		transactionType = &p.Transaction.TransactionType
 	}
-	return result
+
+	if t.TransactionType.CanOverwrite(transactionType) && p.Transaction.PurchaserAccountId == t.PurchaserAccountId {
+		p.Transaction = t
+		return nil
+	} else {
+		return errors.New("SendTransaction: エラー")
+	}
 }
