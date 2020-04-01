@@ -35,6 +35,10 @@ export type StateDisplayLimit = DisplayLimit & {
   state?: StateEnum;
 }
 
+export type Balance = {
+  balance: number
+}
+
 export type ErrorResponseJson = {
   message: string;
 }

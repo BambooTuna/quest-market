@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import {
+  Balance,
   DisplayLimit, ErrorResponseJson,
   OAuth2CodeRedirect, ProductDetailRequest,
   ProductDetailResponse,
@@ -174,6 +175,18 @@ export default class RestAPI {
         method: 'put',
         headers: { Authorization: sessionToken },
         data: data
+      })
+        .then((res: AxiosResponse) => res.data)
+        .catch((e: AxiosError) => this.errorHandler<string>(e))
+    })
+  }
+
+  getBalance (): Promise<Balance> {
+    return this.findSessionToken().then(sessionToken => {
+      return axios({
+        url: this.host + '/money',
+        method: 'get',
+        headers: { Authorization: sessionToken }
       })
         .then((res: AxiosResponse) => res.data)
         .catch((e: AxiosError) => this.errorHandler<string>(e))
