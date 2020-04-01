@@ -22,6 +22,13 @@ func (a ProductDetailsDaoImpl) ResolveByProductId(ctx context.Context, productId
 	return productDetails, err
 }
 
+func (a ProductDetailsDaoImpl) ResolveByPurchasedProductId(ctx context.Context, productId string) (*goods.ProductDetails, error) {
+	var productDetails *goods.ProductDetails
+	sql := fmt.Sprintf("select * from product_details where product_id = '%s' and state == '%s'", productId, goods.Closed)
+	err := a.DBSession.SelectOne(&productDetails, sql)
+	return productDetails, err
+}
+
 func (a ProductDetailsDaoImpl) ResolveByPresenterId(ctx context.Context, practitionerId string) ([]goods.ProductDetails, error) {
 	var productDetails []goods.ProductDetails
 

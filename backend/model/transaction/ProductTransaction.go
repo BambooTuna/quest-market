@@ -3,20 +3,23 @@ package transaction
 import "time"
 
 type ProductTransaction struct {
-	TransactionId     int64                  `db:"transaction_id"`
-	TransactionType   ProductTransactionType `db:"transaction_type"`
-	ProductId         string                 `db:"product_id"`
-	SenderAccountId   string                 `db:"sender_account_id"`
-	ReceiverAccountId string                 `db:"receiver_account_id"`
-	CreatedAt         time.Time              `db:"created_at"`
+	TransactionId      int64                  `db:"transaction_id"`
+	TransactionType    ProductTransactionType `db:"transaction_type"`
+	ProductId          string                 `db:"product_id"`
+	PurchaserAccountId string                 `db:"purchaser_account_id"`
+	SellerAccountId    string                 `db:"seller_account_id"`
+	CreatedAt          time.Time              `db:"created_at"`
 }
 
-func (l *ProductTransaction) Override(r *ProductTransaction) *ProductTransaction {
-	if l.TransactionType.IsAfterThan(r.TransactionType) {
-		return l
-	} else {
-		return r
+func ApplyProductTransaction(transactionType ProductTransactionType, productId, purchaserAccountId, sellerAccountId string) *ProductTransaction {
+	transaction := ProductTransaction{
+		TransactionType:    transactionType,
+		ProductId:          productId,
+		PurchaserAccountId: purchaserAccountId,
+		SellerAccountId:    sellerAccountId,
+		CreatedAt:          time.Now(),
 	}
+	return &transaction
 }
 
 type ProductTransactionType string
@@ -27,16 +30,14 @@ const (
 	Complete          ProductTransactionType = "complete"
 )
 
-func (l ProductTransactionType) IsAfterThan(r ProductTransactionType) bool {
-	switch l {
+func (after ProductTransactionType) CanOverwrite(before *ProductTransactionType) bool {
+	switch after {
+	case WaitingForPayment:
+		return before == nil
 	case WaitingToReceive:
-		if r == WaitingForPayment {
-			return true
-		}
+		return *before == WaitingForPayment
 	case Complete:
-		if r != Complete {
-			return true
-		}
+		return *before == WaitingToReceive
 	}
 	return false
 }
