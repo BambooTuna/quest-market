@@ -14,6 +14,11 @@ $ export SESSION_TOKEN=[~~~]
 $ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/health -i
 ```
 
+```bash
+$ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/money -i
+$ curl -X POST -H "Authorization: $SESSION_TOKEN" -H "Content-Type: application/json" -d '{"to":"2719b422-d8a0-37c7-b4f0-a1800421beda","amount":10}' ${API_ENDPOINT}/money -i
+```
+
 
 ## ローカル環境構築
 ```bash

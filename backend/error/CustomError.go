@@ -16,6 +16,10 @@ const (
 	SqlRequestFailed      CustomError = "Internal Server Error"
 	RequestFieldEmpty     CustomError = "Internal Server Error"
 	BindJSONFailed        CustomError = "不正なJson形式です"
+
+	PurchaseYourself CustomError = "自分自身の出品を買おうとしている"
+	ProductSold      CustomError = "売り切れ"
+	LackOfMoney      CustomError = "金不足"
 )
 
 func ValidateError(fieldName string, errType string) CustomError {

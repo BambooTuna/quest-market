@@ -12,7 +12,18 @@ type ProductDetails struct {
 	Detail      string `validate:"required" db:"detail"`
 	Price       int64  `validate:"min=1" db:"price"`
 	PresenterId string `db:"presenter_id" json:"presenterId"`
-	State       string `validate:"required" db:"state"`
+	State       State  `validate:"required" db:"state"`
+}
+
+func (p *ProductDetails) PurchaseBy(accountId string) (*ProductDetails, error) {
+	if p.PresenterId == accountId {
+		return nil, error2.Error(error2.PurchaseYourself)
+	}
+	if p.State == Closed {
+		return nil, error2.Error(error2.ProductSold)
+	}
+	p.State = Closed
+	return p, nil
 }
 
 func (p *ProductDetails) Validate() (*ProductDetails, error) {
@@ -27,7 +38,7 @@ func (p *ProductDetails) Validate() (*ProductDetails, error) {
 	return p, nil
 }
 
-func GenerateProductDetails(title, detail, presenterId, state string, price int64) (*ProductDetails, error) {
+func GenerateProductDetails(title, detail, presenterId string, state State, price int64) (*ProductDetails, error) {
 	uuid, err := settings.GenerateUUID()
 	if err != nil {
 		return nil, err

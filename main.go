@@ -3,12 +3,14 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/BambooTuna/quest-market/backend/aggregate"
 	"github.com/BambooTuna/quest-market/backend/controller"
 	"github.com/BambooTuna/quest-market/backend/dao"
 	"github.com/BambooTuna/quest-market/backend/json"
 	"github.com/BambooTuna/quest-market/backend/lib/session"
 	"github.com/BambooTuna/quest-market/backend/model/account"
 	"github.com/BambooTuna/quest-market/backend/model/goods"
+	"github.com/BambooTuna/quest-market/backend/model/transaction"
 	"github.com/BambooTuna/quest-market/backend/settings"
 	"github.com/BambooTuna/quest-market/backend/usecase"
 	"github.com/gin-contrib/static"
@@ -34,6 +36,7 @@ func main() {
 	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbSession.AddTableWithName(account.AccountCredentials{}, "account_credentials").SetKeys(false, "account_id")
 	dbSession.AddTableWithName(goods.ProductDetails{}, "product_details").SetKeys(false, "product_id")
+	dbSession.AddTableWithName(transaction.MoneyTransaction{}, "money_transaction").SetKeys(true, "transaction_id")
 	defer dbSession.Db.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -55,9 +58,13 @@ func main() {
 	authSession := session.DefaultSession{Dao: sessionDao, Settings: session.DefaultSessionSettings(settings.FetchEnvValue("SESSION_SECRET", "1234567890asdfghjkl"))}
 	accountCredentialsDao := dao.AccountCredentialsDaoImpl{DBSession: dbSession}
 	productDetailsDao := dao.ProductDetailsDaoImpl{DBSession: dbSession}
+	moneyTransactionDao := dao.MoneyTransactionDaoImpl{DBSession: dbSession}
+
+	moneyTransactionAggregates := aggregate.MoneyTransactionAggregates{MoneyTransactionDao: moneyTransactionDao, Aggregates: map[string]*aggregate.MoneyTransactionAggregate{}}
 
 	authenticationUseCase := usecase.AuthenticationUseCase{AccountCredentialsDao: accountCredentialsDao}
 	productDetailsUseCase := usecase.ProductDetailsUseCase{ProductDetailsDao: productDetailsDao}
+	moneyManagementUseCase := usecase.MoneyManagementUseCase{ManagementAccountId: "", MoneyTransactionAggregates: &moneyTransactionAggregates}
 
 	authenticationController := controller.AuthenticationController{
 		Session:               authSession,
@@ -66,6 +73,10 @@ func main() {
 	productController := controller.ProductController{
 		Session:               authSession,
 		ProductDetailsUseCase: productDetailsUseCase,
+	}
+	moneyManagementController := controller.MoneyManagementController{
+		Session:                authSession,
+		MoneyManagementUseCase: moneyManagementUseCase,
 	}
 
 	r := gin.Default()
@@ -81,6 +92,9 @@ func main() {
 	r.GET(apiVersion+"/products/self", productController.GetMyProductListRoute())
 	r.POST(apiVersion+"/product", productController.ExhibitionRoute())
 	r.PUT(apiVersion+"/product/:productId", productController.UpdateProductDetailsRoute())
+
+	r.GET(apiVersion+"/money", moneyManagementController.GetBalanceRoute())
+	r.POST(apiVersion+"/money", moneyManagementController.SendMoneyRoute())
 
 	//r.POST(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
 	//r.GET(apiVersion+"/oauth2/signin/line", UnimplementedRoute)

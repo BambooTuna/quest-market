@@ -1,6 +1,8 @@
 package transaction
 
-import "time"
+import (
+	"time"
+)
 
 type MoneyTransaction struct {
 	TransactionId   int64                `db:"transaction_id"`
@@ -10,6 +12,18 @@ type MoneyTransaction struct {
 	RealPart        int64                `db:"real_part"`
 	ExponentPart    int64                `db:"exponent_part"`
 	CreatedAt       time.Time            `db:"created_at"`
+}
+
+func ApplyMoneyTransaction(accountId string, transactionType MoneyTransactionType, money int64) *MoneyTransaction {
+	transaction := MoneyTransaction{
+		TransactionType: transactionType,
+		AccountId:       accountId,
+		Currency:        JPY,
+		RealPart:        money,
+		ExponentPart:    1,
+		CreatedAt:       time.Now(),
+	}
+	return &transaction
 }
 
 type MoneyTransactionType string

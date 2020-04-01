@@ -37,6 +37,9 @@ CREATE TABLE `money_transaction` (
   PRIMARY KEY (`transaction_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO `money_transaction` (`transaction_type`, `account_id`, `currency`, `real_part`, `exponent_part`) VALUES
+("deposit", "f0c28384-3aa4-3f87-9fba-66a0aa62c504", "jpy", 10000, 1);
+
 /*
 transaction_type: waiting_for_payment, waiting_to_receive, complete
 */
@@ -44,8 +47,8 @@ CREATE TABLE `product_transaction` (
   `transaction_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `transaction_type` varchar(255) NOT NULL,
   `product_id` varchar(255) NOT NULL,
-  `sender_account_id` varchar(255) NOT NULL,
-  `receiver_account_id` varchar(255) NOT NULL,
+  `purchaser_account_id` varchar(255) NOT NULL,
+  `seller_account_id` varchar(255) NOT NULL,
   `created_at` timestamp(3) NOT NULL DEFAULT current_timestamp(3),
   PRIMARY KEY (`transaction_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
