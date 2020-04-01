@@ -6,6 +6,7 @@ import (
 	"github.com/BambooTuna/quest-market/backend/command"
 	"github.com/BambooTuna/quest-market/backend/dao"
 	error2 "github.com/BambooTuna/quest-market/backend/error"
+	"github.com/BambooTuna/quest-market/backend/model/goods"
 	"github.com/BambooTuna/quest-market/backend/model/transaction"
 )
 
@@ -23,8 +24,10 @@ func (p *PurchaseUseCase) Application(ctx context.Context, c *command.PurchaseAp
 	if productDetails.PresenterId == c.PurchaserAccountId {
 		return error2.Error(error2.PurchaseYourself)
 	}
-
-	if count, err := p.ProductDetailsDao.Update(ctx, productDetails); count == 0 || err != nil {
+	productDetails.State = goods.Closed
+	if count, err := p.ProductDetailsDao.Update(ctx, productDetails); count == 0 {
+		return error2.Error(error2.NoUpdatesWereFound)
+	} else if err != nil {
 		return error2.Error(error2.SqlRequestFailed)
 	}
 
@@ -58,4 +61,8 @@ func (p *PurchaseUseCase) ReceiptConfirmation(ctx context.Context, c *command.Pu
 	}
 	productTransaction := transaction.ApplyProductTransaction(transaction.Complete, c.ProductId, "", c.SellerAccountId)
 	return p.ProductTransactionAggregates.SendTransaction(productTransaction)
+}
+
+func (p *PurchaseUseCase) GetTransactionByAccountId(accountId string) []*transaction.ProductTransaction {
+	return p.ProductTransactionAggregates.GetTransactionByAccountId(accountId)
 }

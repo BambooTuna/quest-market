@@ -34,7 +34,7 @@ func (a ProductDetailsDaoImpl) ResolveByPresenterId(ctx context.Context, practit
 
 	sql := fmt.Sprintf("select * from product_details where presenter_id = '%s' and state != '%s'", practitionerId, goods.Deleted)
 	if practitionerId == "" {
-		sql = fmt.Sprintf("select * from product_details where state = '%s'", goods.Open)
+		sql = fmt.Sprintf("select * from product_details where state = '%s' or state = '%s'", goods.Open, goods.Closed)
 	}
 	_, err := a.DBSession.Select(&productDetails, sql)
 	return productDetails, err

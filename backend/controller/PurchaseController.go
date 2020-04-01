@@ -35,8 +35,8 @@ func (c *PurchaseController) PurchaseFlowRoute() func(*gin.Context) {
 				command := command.PurchasePaymentCommand{ProductId: productId, PurchaserAccountId: accountSessionToken.AccountId}
 				err = c.PurchaseUseCase.Payment(ctx, &command)
 			case transaction.Complete:
-				//command := command.PurchaseReceiptConfirmationCommand{ProductId:productId,SellerAccountId:accountSessionToken.AccountId}
-
+				command := command.PurchaseReceiptConfirmationCommand{ProductId: productId, SellerAccountId: accountSessionToken.AccountId}
+				err = c.PurchaseUseCase.ReceiptConfirmation(ctx, &command)
 			}
 
 			if err != nil {
@@ -45,5 +45,12 @@ func (c *PurchaseController) PurchaseFlowRoute() func(*gin.Context) {
 			}
 			ctx.Status(http.StatusOK)
 		}
+	})
+}
+
+func (c *PurchaseController) GetMyProductTransactionRoute() func(*gin.Context) {
+	return c.Session.RequiredSession(func(ctx *gin.Context, token *string) {
+		accountSessionToken := model.DecodeToAccountSessionToken(*token)
+		ctx.JSON(http.StatusOK, json.ConvertToProductTransactionListResponseJson(c.PurchaseUseCase.GetTransactionByAccountId(accountSessionToken.AccountId)))
 	})
 }

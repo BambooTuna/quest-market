@@ -34,6 +34,19 @@ func (p *ProductTransactionAggregates) GetTransaction(productId string) (transac
 	return *aggregate.Transaction, nil
 }
 
+func (p *ProductTransactionAggregates) GetTransactionByAccountId(accountId string) []*transaction.ProductTransaction {
+	var transactions []*transaction.ProductTransaction
+	for _, value := range p.Aggregates {
+		t := value.Transaction
+		if t != nil {
+			if t.PurchaserAccountId == accountId || t.SellerAccountId == accountId {
+				transactions = append(transactions, t)
+			}
+		}
+	}
+	return transactions
+}
+
 func (p *ProductTransactionAggregates) Init(productId string) (*ProductTransactionAggregate, error) {
 	if value, ok := p.Aggregates[productId]; ok {
 		p.Aggregates[productId] = value

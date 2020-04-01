@@ -105,6 +105,7 @@ func main() {
 	r.GET(apiVersion+"/money", moneyManagementController.GetBalanceRoute())
 	r.POST(apiVersion+"/money", moneyManagementController.SendMoneyRoute())
 
+	r.GET(apiVersion+"/purchase", purchaseController.GetMyProductTransactionRoute())
 	r.PUT(apiVersion+"/purchase/:productId", purchaseController.PurchaseFlowRoute())
 
 	//r.POST(apiVersion+"/oauth2/signin/line", UnimplementedRoute)

@@ -18,8 +18,13 @@ $ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/health -i
 $ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/money -i
 $ curl -X POST -H "Authorization: $SESSION_TOKEN" -H "Content-Type: application/json" -d '{"to":"2719b422-d8a0-37c7-b4f0-a1800421beda","amount":10}' ${API_ENDPOINT}/money -i
 
+$ curl -X GET ${API_ENDPOINT}/products -i
+
+
 
 $ export PRODUCT_ID=[~~~]
+$ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/purchase -i
+
 $ curl -X PUT -H "Authorization: $SESSION_TOKEN" "${API_ENDPOINT}/purchase/${PRODUCT_ID}?type=waiting_for_payment" -i
 $ curl -X PUT -H "Authorization: $SESSION_TOKEN" "${API_ENDPOINT}/purchase/${PRODUCT_ID}?type=waiting_to_receive" -i
 ```
