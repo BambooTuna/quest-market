@@ -35,9 +35,13 @@ func (after ProductTransactionType) CanOverwrite(before *ProductTransactionType)
 	case WaitingForPayment:
 		return before == nil
 	case WaitingToReceive:
-		return *before == WaitingForPayment
+		if before != nil {
+			return *before == WaitingForPayment
+		}
 	case Complete:
-		return *before == WaitingToReceive
+		if before != nil {
+			return *before == WaitingToReceive
+		}
 	}
 	return false
 }

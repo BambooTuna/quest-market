@@ -20,12 +20,30 @@ func (p *ProductTransactionAggregate) SendTransaction(t *transaction.ProductTran
 	var transactionType *transaction.ProductTransactionType
 	if p.Transaction != nil {
 		transactionType = &p.Transaction.TransactionType
+		if !p.CanWriteThisTransaction(t) {
+			return errors.New("SendTransaction: AccountIdが一致しない")
+		}
 	}
 
-	if t.TransactionType.CanOverwrite(transactionType) && p.Transaction.PurchaserAccountId == t.PurchaserAccountId {
+	if t.TransactionType.CanOverwrite(transactionType) {
 		p.Transaction = t
 		return nil
 	} else {
-		return errors.New("SendTransaction: エラー")
+		return errors.New("SendTransaction: CanOverwriteエラー")
 	}
+}
+
+func (p *ProductTransactionAggregate) CanWriteThisTransaction(t *transaction.ProductTransaction) bool {
+	if p.Transaction == nil {
+		return false
+	}
+	switch p.Transaction.TransactionType {
+	case transaction.WaitingForPayment:
+		return p.Transaction.PurchaserAccountId == t.PurchaserAccountId
+	case transaction.WaitingToReceive:
+		return p.Transaction.PurchaserAccountId == t.PurchaserAccountId
+	case transaction.Complete:
+		return p.Transaction.SellerAccountId == t.SellerAccountId
+	}
+	return false
 }

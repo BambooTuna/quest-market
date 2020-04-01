@@ -15,17 +15,6 @@ type ProductDetails struct {
 	State       State  `validate:"required" db:"state"`
 }
 
-func (p *ProductDetails) PurchaseBy(accountId string) (*ProductDetails, error) {
-	if p.PresenterId == accountId {
-		return nil, error2.Error(error2.PurchaseYourself)
-	}
-	if p.State == Closed {
-		return nil, error2.Error(error2.ProductSold)
-	}
-	p.State = Closed
-	return p, nil
-}
-
 func (p *ProductDetails) Validate() (*ProductDetails, error) {
 	validate := validator.New()
 	var errorMessages []error2.CustomError

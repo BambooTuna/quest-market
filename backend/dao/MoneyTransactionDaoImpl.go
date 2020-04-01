@@ -15,7 +15,7 @@ func (a MoneyTransactionDaoImpl) Insert(record *transaction.MoneyTransaction) er
 }
 
 func (a MoneyTransactionDaoImpl) ResolveAllByAccountId(accountId string) ([]*transaction.MoneyTransaction, error) {
-	var accountCredentials []*transaction.MoneyTransaction
-	_, err := a.DBSession.Select(&accountCredentials, fmt.Sprintf("select * from money_transaction where account_id = '%s' ORDER BY transaction_id ASC", accountId))
-	return accountCredentials, err
+	var moneyTransactions []*transaction.MoneyTransaction
+	_, err := a.DBSession.Select(&moneyTransactions, fmt.Sprintf("select * from money_transaction where account_id = '%s' ORDER BY transaction_id ASC", accountId))
+	return moneyTransactions, err
 }

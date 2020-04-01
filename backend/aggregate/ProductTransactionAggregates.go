@@ -36,6 +36,8 @@ func (p *ProductTransactionAggregates) GetTransaction(productId string) (transac
 
 func (p *ProductTransactionAggregates) Init(productId string) (*ProductTransactionAggregate, error) {
 	if value, ok := p.Aggregates[productId]; ok {
+		p.Aggregates[productId] = value
+	} else {
 		moneyTransactions, err := p.ProductTransactionDao.ResolveAllByProductId(productId)
 		if err != nil {
 			return nil, err
@@ -43,8 +45,6 @@ func (p *ProductTransactionAggregates) Init(productId string) (*ProductTransacti
 		aggregate := ProductTransactionAggregate{ProductId: productId, Transaction: nil}
 		aggregate.ReceiveRecover(moneyTransactions)
 		p.Aggregates[productId] = &aggregate
-	} else {
-		p.Aggregates[productId] = value
 	}
 	return p.Aggregates[productId], nil
 }

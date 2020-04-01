@@ -37,6 +37,7 @@ func main() {
 	dbSession.AddTableWithName(account.AccountCredentials{}, "account_credentials").SetKeys(false, "account_id")
 	dbSession.AddTableWithName(goods.ProductDetails{}, "product_details").SetKeys(false, "product_id")
 	dbSession.AddTableWithName(transaction.MoneyTransaction{}, "money_transaction").SetKeys(true, "transaction_id")
+	dbSession.AddTableWithName(transaction.ProductTransaction{}, "product_transaction").SetKeys(true, "transaction_id")
 	defer dbSession.Db.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -59,12 +60,15 @@ func main() {
 	accountCredentialsDao := dao.AccountCredentialsDaoImpl{DBSession: dbSession}
 	productDetailsDao := dao.ProductDetailsDaoImpl{DBSession: dbSession}
 	moneyTransactionDao := dao.MoneyTransactionDaoImpl{DBSession: dbSession}
+	productTransactionDao := dao.ProductTransactionDaoImpl{DBSession: dbSession}
 
 	moneyTransactionAggregates := aggregate.MoneyTransactionAggregates{MoneyTransactionDao: moneyTransactionDao, Aggregates: map[string]*aggregate.MoneyTransactionAggregate{}}
+	productTransactionAggregates := aggregate.ProductTransactionAggregates{ProductTransactionDao: productTransactionDao, Aggregates: map[string]*aggregate.ProductTransactionAggregate{}}
 
 	authenticationUseCase := usecase.AuthenticationUseCase{AccountCredentialsDao: accountCredentialsDao}
 	productDetailsUseCase := usecase.ProductDetailsUseCase{ProductDetailsDao: productDetailsDao}
-	moneyManagementUseCase := usecase.MoneyManagementUseCase{ManagementAccountId: "", MoneyTransactionAggregates: &moneyTransactionAggregates}
+	moneyManagementUseCase := usecase.MoneyManagementUseCase{ManagementAccountId: settings.FetchEnvValue("ADMIN_ACCOUNT_ID", "f0c28384-3aa4-3f87-9fba-66a0aa62c504"), MoneyTransactionAggregates: &moneyTransactionAggregates}
+	purchaseUseCase := usecase.PurchaseUseCase{ProductDetailsDao: productDetailsDao, MoneyManagementUseCase: &moneyManagementUseCase, ProductTransactionAggregates: &productTransactionAggregates}
 
 	authenticationController := controller.AuthenticationController{
 		Session:               authSession,
@@ -77,6 +81,10 @@ func main() {
 	moneyManagementController := controller.MoneyManagementController{
 		Session:                authSession,
 		MoneyManagementUseCase: moneyManagementUseCase,
+	}
+	purchaseController := controller.PurchaseController{
+		Session:         authSession,
+		PurchaseUseCase: purchaseUseCase,
 	}
 
 	r := gin.Default()
@@ -95,6 +103,8 @@ func main() {
 
 	r.GET(apiVersion+"/money", moneyManagementController.GetBalanceRoute())
 	r.POST(apiVersion+"/money", moneyManagementController.SendMoneyRoute())
+
+	r.PUT(apiVersion+"/purchase/:productId", purchaseController.PurchaseFlowRoute())
 
 	//r.POST(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
 	//r.GET(apiVersion+"/oauth2/signin/line", UnimplementedRoute)
