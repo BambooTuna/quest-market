@@ -27,9 +27,7 @@ func (m *MoneyTransactionAggregates) SendTransaction(t *transaction.MoneyTransac
 }
 
 func (m *MoneyTransactionAggregates) GetBalance(accountId string) (int64, error) {
-	println(accountId)
 	aggregate, err := m.Init(accountId)
-	println(aggregate)
 	if err != nil {
 		return 0, err
 	}

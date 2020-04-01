@@ -6,12 +6,12 @@ import (
 )
 
 type ProductTransactionResponseJson struct {
-	TransactionId      int64                              `db:"transaction_id"`
-	TransactionType    transaction.ProductTransactionType `db:"transaction_type"`
-	ProductId          string                             `db:"product_id"`
-	PurchaserAccountId string                             `db:"purchaser_account_id"`
-	SellerAccountId    string                             `db:"seller_account_id"`
-	CreatedAt          time.Time                          `db:"created_at"`
+	TransactionId      int64                              `json:"transaction_id"`
+	TransactionType    transaction.ProductTransactionType `json:"transaction_type"`
+	ProductId          string                             `json:"product_id"`
+	PurchaserAccountId string                             `json:"purchaser_account_id"`
+	SellerAccountId    string                             `json:"seller_account_id"`
+	CreatedAt          time.Time                          `json:"created_at"`
 }
 
 func ConvertToProductTransactionResponseJson(p *transaction.ProductTransaction) *ProductTransactionResponseJson {

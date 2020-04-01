@@ -19,3 +19,9 @@ func (a ProductTransactionDaoImpl) ResolveAllByProductId(productId string) ([]*t
 	_, err := a.DBSession.Select(&productTransaction, fmt.Sprintf("select * from product_transaction where product_id = '%s' ORDER BY transaction_id ASC", productId))
 	return productTransaction, err
 }
+
+func (a ProductTransactionDaoImpl) ResolveAll() ([]*transaction.ProductTransaction, error) {
+	var productTransaction []*transaction.ProductTransaction
+	_, err := a.DBSession.Select(&productTransaction, "select * from product_transaction ORDER BY transaction_id ASC")
+	return productTransaction, err
+}

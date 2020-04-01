@@ -10,8 +10,26 @@ type ProductTransactionAggregates struct {
 	Aggregates            map[string]*ProductTransactionAggregate
 }
 
+func (p *ProductTransactionAggregates) RecoverAll() {
+	productTransactionsTransactions, err := p.ProductTransactionDao.ResolveAll()
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	p.Aggregates = map[string]*ProductTransactionAggregate{}
+	for _, t := range productTransactionsTransactions {
+		if aggregate, ok := p.Aggregates[t.ProductId]; ok {
+			aggregate.ReceiveRecover([]*transaction.ProductTransaction{t})
+		} else {
+			aggregate := ProductTransactionAggregate{ProductId: t.ProductId, Transaction: nil}
+			aggregate.ReceiveRecover([]*transaction.ProductTransaction{t})
+			p.Aggregates[t.ProductId] = &aggregate
+		}
+	}
+}
+
 func (p *ProductTransactionAggregates) SendTransaction(t *transaction.ProductTransaction) error {
-	aggregate, err := p.Init(t.ProductId)
+	aggregate, err := p.GetAggregateByProductId(t.ProductId)
 	if err != nil {
 		return err
 	}
@@ -27,7 +45,7 @@ func (p *ProductTransactionAggregates) SendTransaction(t *transaction.ProductTra
 }
 
 func (p *ProductTransactionAggregates) GetTransaction(productId string) (transaction.ProductTransaction, error) {
-	aggregate, err := p.Init(productId)
+	aggregate, err := p.GetAggregateByProductId(productId)
 	if err != nil {
 		return transaction.ProductTransaction{}, err
 	}
@@ -47,16 +65,16 @@ func (p *ProductTransactionAggregates) GetTransactionByAccountId(accountId strin
 	return transactions
 }
 
-func (p *ProductTransactionAggregates) Init(productId string) (*ProductTransactionAggregate, error) {
+func (p *ProductTransactionAggregates) GetAggregateByProductId(productId string) (*ProductTransactionAggregate, error) {
 	if value, ok := p.Aggregates[productId]; ok {
 		p.Aggregates[productId] = value
 	} else {
-		moneyTransactions, err := p.ProductTransactionDao.ResolveAllByProductId(productId)
+		productTransactions, err := p.ProductTransactionDao.ResolveAllByProductId(productId)
 		if err != nil {
 			return nil, err
 		}
 		aggregate := ProductTransactionAggregate{ProductId: productId, Transaction: nil}
-		aggregate.ReceiveRecover(moneyTransactions)
+		aggregate.ReceiveRecover(productTransactions)
 		p.Aggregates[productId] = &aggregate
 	}
 	return p.Aggregates[productId], nil

@@ -24,7 +24,6 @@ const (
 
 func ValidateError(fieldName string, errType string) CustomError {
 	errorMessage := "を正しく入力してください"
-	println(errType)
 	switch errType {
 	case "email":
 		errorMessage = "がメールアドレスの形式になっていません"

@@ -64,6 +64,7 @@ func main() {
 
 	moneyTransactionAggregates := aggregate.MoneyTransactionAggregates{MoneyTransactionDao: moneyTransactionDao, Aggregates: map[string]*aggregate.MoneyTransactionAggregate{}}
 	productTransactionAggregates := aggregate.ProductTransactionAggregates{ProductTransactionDao: productTransactionDao, Aggregates: map[string]*aggregate.ProductTransactionAggregate{}}
+	productTransactionAggregates.RecoverAll()
 
 	authenticationUseCase := usecase.AuthenticationUseCase{AccountCredentialsDao: accountCredentialsDao}
 	productDetailsUseCase := usecase.ProductDetailsUseCase{ProductDetailsDao: productDetailsDao}
