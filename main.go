@@ -71,8 +71,9 @@ func main() {
 	purchaseUseCase := usecase.PurchaseUseCase{ProductDetailsDao: productDetailsDao, MoneyManagementUseCase: &moneyManagementUseCase, ProductTransactionAggregates: &productTransactionAggregates}
 
 	authenticationController := controller.AuthenticationController{
-		Session:               authSession,
-		AuthenticationUseCase: authenticationUseCase,
+		Session:                authSession,
+		AuthenticationUseCase:  authenticationUseCase,
+		MoneyManagementUseCase: moneyManagementUseCase,
 	}
 	productController := controller.ProductController{
 		Session:               authSession,
