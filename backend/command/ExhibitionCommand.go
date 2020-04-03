@@ -1,12 +1,16 @@
 package command
 
-import "github.com/BambooTuna/quest-market/backend/model/goods"
+import (
+	"github.com/BambooTuna/quest-market/backend/model/item"
+)
 
 type ExhibitionCommand struct {
-	ProductDetailCommand
-	PresenterId string
+	Title           string
+	Detail          string
+	Price           int64
+	SellerAccountId string
 }
 
-func (e ExhibitionCommand) ToProductDetails() (*goods.ProductDetails, error) {
-	return goods.GenerateProductDetails(e.Title, e.Detail, e.PresenterId, e.State, e.Price)
+func (e ExhibitionCommand) ToContractDetails() (*item.ContractDetails, error) {
+	return item.Generate(e.Title, e.Detail, e.Price, e.SellerAccountId)
 }

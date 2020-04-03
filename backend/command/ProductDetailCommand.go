@@ -1,10 +1,12 @@
 package command
 
-import "github.com/BambooTuna/quest-market/backend/model/goods"
+import (
+	"github.com/BambooTuna/quest-market/backend/model/item"
+)
 
-type ProductDetailCommand struct {
+type ItemDetailsCommand struct {
 	Title  string
 	Detail string
 	Price  int64
-	State  goods.State
+	State  item.State
 }
