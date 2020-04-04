@@ -45,6 +45,18 @@ func (i *ItemContractUseCase) CreateNewItemContract(c *command.ExhibitionCommand
 	}
 }
 
+func (i *ItemContractUseCase) EditItemContract(c *command.EditItemDetailsCommand) (*item.ContractDetails, error) {
+	if contractDetails := i.ItemContractDao.ResolvePrivateItemByItemId(c.ItemId, c.PractitionerAccountId); contractDetails == nil {
+		return nil, error2.Error(error2.ItemNotFoundError)
+	} else if newContractDetails, err := contractDetails.Update(c.Title, c.Detail, c.Price, c.State); err != nil {
+		return nil, error2.Error(error2.CustomError(err.Error()))
+	} else if err := i.ItemContractDao.Update(newContractDetails); err != nil {
+		return contractDetails, error2.Error(error2.CustomError(err.Error()))
+	} else {
+		return contractDetails, nil
+	}
+}
+
 func (i *ItemContractUseCase) PurchaseItem(itemId, purchaserAccountId string) error {
 	if contractDetails := i.ItemContractDao.ResolveOpenItemByItemId(itemId); contractDetails == nil {
 		return error2.Error(error2.ItemSoldError)

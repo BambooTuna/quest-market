@@ -93,7 +93,7 @@ func main() {
 
 	r.POST(apiVersion+"/item", itemContractController.ExhibitionRoute())
 	r.GET(apiVersion+"/item/:itemId", itemContractController.GetPublicItemContractRoute("itemId"))
-	r.PUT(apiVersion+"/item/:itemId", UnimplementedRoute)
+	r.PUT(apiVersion+"/item/:itemId", itemContractController.EditRoute("itemId"))
 	r.PUT(apiVersion+"/item/:itemId/purchase", itemContractController.PurchaseItemRoute("itemId"))
 	r.PUT(apiVersion+"/item/:itemId/payment", itemContractController.PaymentOfItemPriceRoute("itemId"))
 	r.PUT(apiVersion+"/item/:itemId/receipt", itemContractController.ReceiptConfirmationRoute("itemId"))

@@ -28,7 +28,7 @@ func (i *ItemContractController) GetPublicItemContractRoute(paramKey string) fun
 			accountSessionToken := model.DecodeToAccountSessionToken(*token)
 			acquiredBy = accountSessionToken.AccountId
 		}
-		contractDetails, err = i.ItemContractUseCase.GetPublicItemContract(itemId, "")
+		contractDetails, err = i.ItemContractUseCase.GetPublicItemContract(itemId, acquiredBy)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 			return
@@ -78,6 +78,26 @@ func (i *ItemContractController) ExhibitionRoute() func(*gin.Context) {
 		} else {
 			ctx.JSON(http.StatusOK, json.ConvertToContractDetailsResponseJson(contractDetails, accountSessionToken.AccountId))
 		}
+	})
+}
+
+func (i *ItemContractController) EditRoute(paramKey string) func(*gin.Context) {
+	return i.Session.RequiredSession(func(ctx *gin.Context, token *string) {
+		itemId := ctx.Param(paramKey)
+		accountSessionToken := model.DecodeToAccountSessionToken(*token)
+		var editItemDetailsRequestJson json.EditItemDetailsRequestJson
+		if err := ctx.BindJSON(&editItemDetailsRequestJson); err != nil {
+			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: error2.Error(error2.BindJSONFailed).Error()})
+			return
+		} else if command, err := editItemDetailsRequestJson.GenerateEditItemDetailsCommand(itemId, accountSessionToken.AccountId); err != nil {
+			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
+			return
+		} else if contractDetails, err := i.ItemContractUseCase.EditItemContract(&command); err != nil {
+			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
+		} else {
+			ctx.JSON(http.StatusOK, json.ConvertToContractDetailsResponseJson(contractDetails, accountSessionToken.AccountId))
+		}
+
 	})
 }
 

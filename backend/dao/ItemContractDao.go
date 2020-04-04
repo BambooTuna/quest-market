@@ -17,6 +17,7 @@ type ItemContractDao interface {
 	//state=Deleted, Draft以外 (自分のみDraftを取得可能)
 	ResolvePrivateItemByItemId(itemId, practitioner string) *item.ContractDetails
 
+	//state=Deleted以外
 	ResolveByAccountId(q settings.QuantityLimit, accountId string) []*item.ContractDetails
 
 	//state=Open
@@ -28,6 +29,7 @@ type ItemContractDao interface {
 
 	Insert(record *item.ContractDetails) error
 
+	Update(record *item.ContractDetails) error
 	UpdateItemDetails(record *item.ContractDetails) error
 	UpdateContractDetails(record *item.ContractDetails) error
 }

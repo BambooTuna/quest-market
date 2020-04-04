@@ -16,6 +16,7 @@ const (
 	SqlRequestFailed      CustomError = "Internal Server Error"
 	RequestFieldEmpty     CustomError = "Internal Server Error"
 	BindJSONFailed        CustomError = "不正なJson形式です"
+	BadState              CustomError = "不正なStateです"
 
 	ItemSoldError     CustomError = "売り切れ"
 	ItemNotFoundError CustomError = "アイテムが見つかりません"

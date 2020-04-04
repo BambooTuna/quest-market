@@ -9,8 +9,9 @@ type ExhibitionCommand struct {
 	Detail          string
 	Price           int64
 	SellerAccountId string
+	State           item.State
 }
 
 func (e ExhibitionCommand) ToContractDetails() (*item.ContractDetails, error) {
-	return item.Generate(e.Title, e.Detail, e.Price, e.SellerAccountId)
+	return item.Generate(e.Title, e.Detail, e.Price, e.SellerAccountId, e.State)
 }

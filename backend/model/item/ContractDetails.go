@@ -19,7 +19,10 @@ type ContractDetails struct {
 	UpdatedAt          time.Time `db:"updated_at"`
 }
 
-func Generate(title, detail string, price int64, sellerAccountId string) (*ContractDetails, error) {
+func Generate(title, detail string, price int64, sellerAccountId string, state State) (*ContractDetails, error) {
+	if state != Open && state != Draft {
+		return nil, error2.Error(error2.BadState)
+	}
 	uuid, err := settings.GenerateUUID()
 	if err != nil {
 		return nil, err
@@ -30,7 +33,7 @@ func Generate(title, detail string, price int64, sellerAccountId string) (*Contr
 		Detail:          detail,
 		Price:           price,
 		SellerAccountId: sellerAccountId,
-		State:           Open,
+		State:           state,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 	}
@@ -38,6 +41,50 @@ func Generate(title, detail string, price int64, sellerAccountId string) (*Contr
 		return nil, err
 	}
 	return &details, nil
+}
+
+func (d *ContractDetails) Update(title, detail string, price int64, state State) (*ContractDetails, error) {
+	d.ChangeTitle(title)
+	d.ChangeDetail(detail)
+	d.ChangePrice(price)
+	d.ChangeState(state)
+	d.UpdateAt()
+
+	if err := d.Validate(); err != nil {
+		return nil, err
+	}
+	return d, nil
+}
+
+func (d *ContractDetails) PurchaseBy(purchaserAccountId string) *ContractDetails {
+	d.PurchaserAccountId = purchaserAccountId
+	d.State = Unpaid
+	return d
+}
+
+func (d *ContractDetails) ChangeTitle(title string) *ContractDetails {
+	d.Title = title
+	return d
+}
+
+func (d *ContractDetails) ChangeDetail(detail string) *ContractDetails {
+	d.Detail = detail
+	return d
+}
+
+func (d *ContractDetails) ChangePrice(price int64) *ContractDetails {
+	d.Price = price
+	return d
+}
+
+func (d *ContractDetails) ChangeState(state State) *ContractDetails {
+	d.State = state
+	return d
+}
+
+func (d *ContractDetails) UpdateAt() *ContractDetails {
+	d.UpdatedAt = time.Now()
+	return d
 }
 
 func (d *ContractDetails) Validate() error {
@@ -50,15 +97,4 @@ func (d *ContractDetails) Validate() error {
 		return error2.Errors(errorMessages)
 	}
 	return nil
-}
-
-func (d *ContractDetails) ChangeState(state State) *ContractDetails {
-	d.State = state
-	return d
-}
-
-func (d *ContractDetails) PurchaseBy(purchaserAccountId string) *ContractDetails {
-	d.PurchaserAccountId = purchaserAccountId
-	d.State = Unpaid
-	return d
 }
