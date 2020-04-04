@@ -2,10 +2,7 @@
   <div class="my-page">
     <Authentication>
       <BalanceWindow :item="item" :loadingFlag="loadingFlag"></BalanceWindow>
-      <h2>自分の出品一覧</h2>
-      <PrivateProductsTable :params="this.$route.query"></PrivateProductsTable>
-      <h2>購入</h2>
-      <PurchasedWindow></PurchasedWindow>
+      <PurchasedWindow :params="this.$route.query"></PurchasedWindow>
     </Authentication>
   </div>
 </template>
@@ -30,8 +27,8 @@ export default class MyPage extends Vue {
     private item!: Balance
     private loadingFlag?: boolean = true
 
-    created (): void {
-      this.api.getBalance()
+    async created () {
+      await this.api.getBalance()
         .then((balance: Balance) => {
           this.item = balance
           this.loadingFlag = false

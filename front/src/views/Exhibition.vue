@@ -23,12 +23,17 @@ export default class Exhibition extends Vue {
   private api: API = new API()
 
   private item: ContractDetailsResponse = {
+    // eslint-disable-next-line @typescript-eslint/camelcase
     item_id: '',
     title: '',
     detail: '',
     price: 0,
+    // eslint-disable-next-line @typescript-eslint/camelcase
     seller_account_id: '',
-    state: 'open'
+    state: 'open',
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    updated_at: '',
+    accessor: 'general'
   }
 
   clickEvent (data: ProductDetailRequest) {

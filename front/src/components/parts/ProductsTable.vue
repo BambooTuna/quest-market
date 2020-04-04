@@ -3,7 +3,7 @@
     <WaitLoading :loading_flag="loadingFlag">
       <ul>
         <li v-for="row in items" :key="row.item_id">
-          <h2><router-link :to=" '/product/' + row.item_id + (privateMode ? '?mode=edit' : '')">{{row.title}}</router-link></h2>
+          <h2><router-link :to=" '/product/' + row.item_id + ((privateMode && row.state === 'open') ? '?mode=edit' : '')">{{row.title}}</router-link></h2>
           <p class="price">¥ {{row.price}}</p>
           <p class="state">{{ stateMessage(row.state) }}</p>
         </li>
@@ -38,11 +38,23 @@ export default class ProductsTable extends Vue {
         case 'open':
           r = '出品中'
           break
+        case 'sold':
+          r = '売り切れ'
+          break
         case 'draft':
           r = '下書き'
           break
-        case 'sold':
-          r = '売り切れ'
+        case 'unpaid':
+          r = '支払い待ち'
+          break
+        case 'sent':
+          r = '受け取り待ち'
+          break
+        case 'complete':
+          r = '取引終了'
+          break
+        case 'deleted':
+          r = '削除済み'
           break
       }
       return r

@@ -17,6 +17,7 @@ export type ProductDetailRequest = {
   state: StateEnum;
 }
 
+export type Accessor = 'general' | 'buyer' | 'seller'
 export type ContractDetailsResponse = {
   item_id: string;
   title: string;
@@ -24,6 +25,8 @@ export type ContractDetailsResponse = {
   price: number;
   seller_account_id: string;
   state: StateEnum;
+  updated_at: string;
+  accessor: Accessor;
 }
 
 export type DisplayLimit = {

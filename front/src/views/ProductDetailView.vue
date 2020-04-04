@@ -1,6 +1,6 @@
 <template>
   <div class="product-detail-view">
-    <ProductDetail v-show="!isEditMode()" :item="item" :loadingFlag="loadingFlag"></ProductDetail>
+    <ProductDetail v-show="!isEditMode()" @click-purchase-event="clickPurchaseEvent" @click-payment-event="clickPaymentEvent" @click-receipt-event="clickReceiptEvent" :item="item" :loadingFlag="loadingFlag"></ProductDetail>
     <EditProductForm v-show="isEditMode()" :item="item" @click-event="clickEvent" :isNew="false" :loadingFlag="loadingFlag"></EditProductForm>
   </div>
 </template>
@@ -27,7 +27,10 @@ export default class ProductDetailView extends Vue {
       price: 0,
       // eslint-disable-next-line @typescript-eslint/camelcase
       seller_account_id: '',
-      state: 'draft'
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      updated_at: '',
+      state: 'draft',
+      accessor: 'general'
     }
 
     public loadingFlag?: boolean = true
@@ -63,6 +66,30 @@ export default class ProductDetailView extends Vue {
     clickEvent (data: ProductDetailRequest) {
       this.api.editProduct(this.productId, data)
         .then(() => alert('編集完了'))
+        .catch((e: Error) => alert(e.message))
+    }
+
+    clickPurchaseEvent (itemId: string) {
+      this.api.purchaseItem(itemId)
+        .then(() => {
+          alert('購入申請完了')
+        })
+        .catch((e: Error) => alert(e.message))
+    }
+
+    clickPaymentEvent (itemId: string) {
+      this.api.paymentForItem(itemId)
+        .then(() => {
+          alert('支払い完了')
+        })
+        .catch((e: Error) => alert(e.message))
+    }
+
+    clickReceiptEvent (itemId: string) {
+      this.api.receiptOfItem(itemId)
+        .then(() => {
+          alert('受け取り確認完了')
+        })
         .catch((e: Error) => alert(e.message))
     }
 }

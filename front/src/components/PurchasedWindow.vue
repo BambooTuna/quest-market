@@ -1,42 +1,50 @@
 <template>
   <div class="purchased-window">
-<!--    <input id="tab1" type="radio" name="TAB" class="tab-switch" checked="checked" /><label class="tab-label" for="tab1">ボタン 1</label>-->
-<!--    <div class="tab-content">-->
-<!--      <PurchasedTabs :items="items" :loadingFlag="loadingFlag"></PurchasedTabs>-->
-<!--    </div>-->
-<!--    <input id="tab2" type="radio" name="TAB" class="tab-switch" /><label class="tab-label" for="tab2">ボタン 2</label>-->
-<!--    <div class="tab-content">-->
-<!--      コンテンツ 2-->
-<!--    </div>-->
-<!--    <input id="tab3" type="radio" name="TAB" class="tab-switch" /><label class="tab-label" for="tab3">ボタン 3</label>-->
-<!--    <div class="tab-content">-->
-<!--      コンテンツ 3-->
-<!--    </div>-->
+    <input id="tab1" type="radio" name="TAB" class="tab-switch" checked="checked" /><label class="tab-label" for="tab1">売ったもの</label>
+    <div class="tab-content">
+      <ProductsTable :items="sellItems()" :privateMode="true" :loadingFlag="loadingFlag"></ProductsTable>
+    </div>
+    <input id="tab2" type="radio" name="TAB" class="tab-switch" /><label class="tab-label" for="tab2">買ったもの</label>
+    <div class="tab-content">
+      <ProductsTable :items="buyItems()" :loadingFlag="loadingFlag"></ProductsTable>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import PurchasedTabs from '@/components/parts/PurchasedTabs.vue'
+import ProductsTable from '@/components/parts/ProductsTable.vue'
 import API from '@/lib/RestAPI'
+import { ContractDetailsResponse, DisplayLimit } from '@/lib/RestAPIProtocol'
 
 @Component({
   components: {
-    PurchasedTabs
+    ProductsTable
   }
 })
 export default class PurchasedWindow extends Vue {
-    // private api: API = new API()
-    // private items: Array<ProductTransaction> = []
-    // private loadingFlag?: boolean = true
-    //
-    // created (): void {
-    //   this.api.getMyProductTransaction()
-    //     .then((items: Array<ProductTransaction>) => {
-    //       this.items = items
-    //       this.loadingFlag = false
-    //     })
-    // }
+    private api: API = new API()
+    private items: Array<ContractDetailsResponse> = []
+    private loadingFlag?: boolean = true
+
+    @Prop()
+    private params!: DisplayLimit
+
+    created (): void {
+      this.api.getMyProducts(this.params)
+        .then((items: Array<ContractDetailsResponse>) => {
+          this.items = items
+          this.loadingFlag = false
+        })
+    }
+
+    sellItems (): Array<ContractDetailsResponse> {
+      return this.items.filter((a: ContractDetailsResponse) => a.accessor === 'seller')
+    }
+
+    buyItems (): Array<ContractDetailsResponse> {
+      return this.items.filter((a: ContractDetailsResponse) => a.accessor === 'buyer')
+    }
 }
 </script>
 

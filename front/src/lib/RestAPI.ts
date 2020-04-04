@@ -113,10 +113,16 @@ export default class RestAPI {
   }
 
   getProductDetail (itemId: string): Promise<ContractDetailsResponse> {
-    return axios({
-      url: this.host + '/item/' + itemId,
-      method: 'get'
-    })
+    return this.findSessionToken()
+      .then(sessionToken => axios({
+        url: this.host + '/item/' + itemId,
+        method: 'get',
+        headers: { Authorization: sessionToken }
+      }))
+      .catch(() => axios({
+        url: this.host + '/item/' + itemId,
+        method: 'get'
+      }))
       .then((res: AxiosResponse) => {
         const result: ContractDetailsResponse = res.data
         return result
@@ -139,7 +145,7 @@ export default class RestAPI {
     })
   }
 
-  getMyProducts (params: StateDisplayLimit): Promise<Array<ContractDetailsResponse>> {
+  getMyProducts (params: DisplayLimit): Promise<Array<ContractDetailsResponse>> {
     return this.findSessionToken().then(sessionToken => {
       return axios({
         url: this.host + '/items/my',
