@@ -1,6 +1,6 @@
 <template>
   <div class="public-products-table">
-        <ProductsTable :items="productList" :privateMode="false" :loadingFlag="loadingFlag"></ProductsTable>
+        <ProductsTable :items="items" :privateMode="false" :loadingFlag="loadingFlag"></ProductsTable>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import ProductsTable from '@/components/parts/ProductsTable.vue'
 import API from '@/lib/RestAPI'
-import { DisplayLimit, ProductDetailResponse } from '@/lib/RestAPIProtocol'
+import { DisplayLimit, ContractDetailsResponse } from '@/lib/RestAPIProtocol'
 
 @Component({
   components: {
@@ -17,7 +17,7 @@ import { DisplayLimit, ProductDetailResponse } from '@/lib/RestAPIProtocol'
 })
 export default class PublicProductsTable extends Vue {
     private api: API = new API()
-    private productList: Array<ProductDetailResponse> = []
+    private items: Array<ContractDetailsResponse> = []
     private loadingFlag?: boolean = true
 
     @Prop()
@@ -27,7 +27,7 @@ export default class PublicProductsTable extends Vue {
       await this.api
         .getProducts(this.params)
         .then(r => {
-          this.productList = r
+          this.items = r
         })
         .catch((e: Error) => alert(e.message))
         .finally(() => {

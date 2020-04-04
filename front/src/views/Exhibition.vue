@@ -12,7 +12,7 @@ import Authentication from '@/components/Authentication.vue'
 import EditProductForm from '@/components/parts/EditProductForm.vue'
 import PrivateProductsTable from '@/components/PrivateProductsTable.vue'
 import API from '@/lib/RestAPI'
-import { ProductDetailRequest, ProductDetailResponse } from '@/lib/RestAPIProtocol'
+import { ProductDetailRequest, ContractDetailsResponse } from '@/lib/RestAPIProtocol'
 
 @Component({
   components: {
@@ -22,13 +22,18 @@ import { ProductDetailRequest, ProductDetailResponse } from '@/lib/RestAPIProtoc
 export default class Exhibition extends Vue {
   private api: API = new API()
 
-  private item: ProductDetailResponse = {
-    id: '',
-    productTitle: '',
-    productDetail: '',
-    requestPrice: 0,
-    presenterId: '',
-    state: 'open'
+  private item: ContractDetailsResponse = {
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    item_id: '',
+    title: '',
+    detail: '',
+    price: 0,
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    seller_account_id: '',
+    state: 'open',
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    updated_at: '',
+    accessor: 'general'
   }
 
   clickEvent (data: ProductDetailRequest) {

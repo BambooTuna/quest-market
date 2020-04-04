@@ -2,10 +2,10 @@
   <div class="products_table">
     <WaitLoading :loading_flag="loadingFlag">
       <ul>
-        <li v-for="row in items" :key="row.id">
-          <h2><router-link :to=" '/product/' + row.id + (privateMode ? '?mode=edit' : '')">{{row.productTitle}}</router-link></h2>
-          <p class="price">¥ {{row.requestPrice}}</p>
-          <p class="state" v-show="privateMode">{{ (row.state === 'draft' ? '下書き' : '出品中') }}</p>
+        <li v-for="row in items" :key="row.item_id">
+          <h2><router-link :to=" '/product/' + row.item_id + ((privateMode && (row.state === 'open' || row.state === 'draft')) ? '?mode=edit' : '')">{{row.title}}</router-link></h2>
+          <p class="price">¥ {{row.price}}</p>
+          <p class="state">{{ stateMessage(row.state) }}</p>
         </li>
       </ul>
     </WaitLoading>
@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { ProductDetailResponse } from '@/lib/RestAPIProtocol'
+import { ContractDetailsResponse, StateEnum } from '@/lib/RestAPIProtocol'
 import WaitLoading from '@/components/parts/WaitLoading.vue'
 
 @Component({
@@ -24,13 +24,41 @@ import WaitLoading from '@/components/parts/WaitLoading.vue'
 })
 export default class ProductsTable extends Vue {
     @Prop()
-    private items!: Array<ProductDetailResponse>;
+    private items!: Array<ContractDetailsResponse>;
 
     @Prop()
     private privateMode!: boolean
 
     @Prop()
     private loadingFlag?: boolean = true
+
+    stateMessage (state: StateEnum): string {
+      let r = '???'
+      switch (state) {
+        case 'open':
+          r = '出品中'
+          break
+        case 'sold':
+          r = '売り切れ'
+          break
+        case 'draft':
+          r = '下書き'
+          break
+        case 'unpaid':
+          r = '支払い待ち'
+          break
+        case 'sent':
+          r = '受け取り待ち'
+          break
+        case 'complete':
+          r = '取引終了'
+          break
+        case 'deleted':
+          r = '削除済み'
+          break
+      }
+      return r
+    }
 }
 </script>
 

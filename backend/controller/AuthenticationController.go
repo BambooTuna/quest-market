@@ -10,8 +10,9 @@ import (
 )
 
 type AuthenticationController struct {
-	Session               session.Session
-	AuthenticationUseCase usecase.AuthenticationUseCase
+	Session                session.Session
+	AuthenticationUseCase  usecase.AuthenticationUseCase
+	MoneyManagementUseCase usecase.MoneyManagementUseCase
 }
 
 func (c *AuthenticationController) SignUpRoute() func(*gin.Context) {
@@ -24,6 +25,8 @@ func (c *AuthenticationController) SignUpRoute() func(*gin.Context) {
 		if err != nil {
 			return nil, err
 		}
+		//TODO 環境変数で指定できるようにする
+		c.MoneyManagementUseCase.ManagementPayment(accountCredentials.AccountId, 10000)
 		r := model.AccountSessionToken{AccountId: accountCredentials.AccountId, Cooperation: ""}.ToString()
 		ctx.Status(http.StatusOK)
 		return &r, nil

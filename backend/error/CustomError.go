@@ -16,17 +16,27 @@ const (
 	SqlRequestFailed      CustomError = "Internal Server Error"
 	RequestFieldEmpty     CustomError = "Internal Server Error"
 	BindJSONFailed        CustomError = "不正なJson形式です"
+	BadState              CustomError = "不正なStateです"
+
+	ItemSoldError     CustomError = "売り切れ"
+	ItemNotFoundError CustomError = "アイテムが見つかりません"
+	PurchaseYourself  CustomError = "自分自身の出品を買おうとしている"
+	CannotBuy         CustomError = "購入できませんでした"
+	LackOfMoney       CustomError = "金不足"
 )
 
 func ValidateError(fieldName string, errType string) CustomError {
 	errorMessage := "を正しく入力してください"
-	println(errType)
 	switch errType {
 	case "email":
 		errorMessage = "がメールアドレスの形式になっていません"
 	case "min":
-		errorMessage = "は１文字以上入力してください"
+		errorMessage = "は１以上で入力してください"
 	case "max":
+		errorMessage = "が大きすぎます"
+	case "gte":
+		errorMessage = "が短すぎます"
+	case "lte":
 		errorMessage = "が長すぎます"
 	case "required":
 		errorMessage = "を入力してください"

@@ -9,7 +9,7 @@ import (
 type AccountCredentials struct {
 	AccountId string `db:"account_id"`
 	Mail      string `validate:"required,email" db:"mail"`
-	Password  string `validate:"max=255,min=1" db:"password"`
+	Password  string `db:"password"`
 }
 
 func (a *AccountCredentials) Authentication(plainPass string) (*AccountCredentials, error) {
