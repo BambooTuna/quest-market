@@ -2,17 +2,26 @@ package item
 
 type State string
 
+type Accessor string
+
 const (
-	Open State = "open"
-	Sold State = "sold"
+	General Accessor = "general"
+	Seller  Accessor = "seller"
+	Buyer   Accessor = "buyer"
+)
 
-	Draft State = "draft"
+const (
+	//Public
+	Open    State = "open"
+	Draft   State = "draft"
+	Deleted State = "deleted"
 
+	//Seller, Buyerのみ
 	Unpaid   State = "unpaid"
 	Sent     State = "sent"
 	Complete State = "complete"
-
-	Deleted State = "deleted"
+	//Public向け
+	Sold State = "sold"
 )
 
 func (s State) Secret(hide bool) State {

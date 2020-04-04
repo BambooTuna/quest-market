@@ -41,6 +41,9 @@ func (i ItemContractDaoImpl) ResolvePrivateItemByItemId(itemId, practitioner str
 
 func (i ItemContractDaoImpl) ResolveByAccountId(q settings.QuantityLimit, accountId string) []*item.ContractDetails {
 	var result []*item.ContractDetails
+	sql := fmt.Sprintf("%s and contract_details.state != '%s' and contract_details.state != '%s' and (contract_details.purchaser_account_id = '%s' or contract_details.seller_account_id = '%s') ORDER BY contract_details.updated_at desc Limit %d,%d", i.JoinWhere(), item.Deleted, item.Draft, accountId, accountId, q.Drop(), q.Limit)
+	println("ResolveByAccountId: " + sql)
+	i.DBSession.Select(&result, sql)
 	return result
 }
 

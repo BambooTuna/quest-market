@@ -27,6 +27,8 @@ $ curl -X POST -H "Authorization: $SESSION_TOKEN" -H "Content-Type: application/
 $ curl -X GET ${API_ENDPOINT}/items -i
 $ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/items -i
 
+$ curl -X GET -H "Authorization: $SESSION_TOKEN" ${API_ENDPOINT}/items/my -i
+
 $ curl -X POST -H "Authorization: $SESSION_TOKEN" -H "Content-Type: application/json" -d '{"title":"title","detail":"detail","price":1000}' ${API_ENDPOINT}/item -i
 $ export ITEM_ID=[~~~]
 
