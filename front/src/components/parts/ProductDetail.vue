@@ -50,9 +50,11 @@ export default class ProductDetail extends Vue {
     purchaseOnClick (itemId: string) {
       this.clickPurchaseEvent(itemId)
     }
+
     paymentOnClick (itemId: string) {
       this.clickPaymentEvent(itemId)
     }
+
     receiptOnClick (itemId: string) {
       this.clickReceiptEvent(itemId)
     }
