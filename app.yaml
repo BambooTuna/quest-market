@@ -20,6 +20,7 @@ vpc_access_connector:
 env_variables:
   PORT: 8080
   SESSION_SECRET: asdfghjkl1234567890
+  ADMIN_ACCOUNT_ID: b8a276c4-eab9-346e-83ac-164651af4209
   MYSQL_SOURCE: BambooTuna:pass@tcp(10.128.0.2:3306)/market
   MYSQL_USER: BambooTuna
   MYSQL_PASS: pass
