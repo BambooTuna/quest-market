@@ -36,11 +36,13 @@ export default class ProductDetail extends Vue {
     public clickPurchaseEvent (itemId: string): void {
       // do nothing.
     }
+
     @Emit()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public clickPaymentEvent (itemId: string): void {
       // do nothing.
     }
+
     @Emit()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public clickReceiptEvent (itemId: string): void {
