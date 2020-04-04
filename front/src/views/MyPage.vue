@@ -4,6 +4,8 @@
       <BalanceWindow :item="item" :loadingFlag="loadingFlag"></BalanceWindow>
       <h2>自分の出品一覧</h2>
       <PrivateProductsTable :params="this.$route.query"></PrivateProductsTable>
+      <h2>購入</h2>
+      <PurchasedWindow></PurchasedWindow>
     </Authentication>
   </div>
 </template>
@@ -13,12 +15,13 @@ import { Component, Vue } from 'vue-property-decorator'
 import Authentication from '@/components/Authentication.vue'
 import PrivateProductsTable from '@/components/PrivateProductsTable.vue'
 import BalanceWindow from '@/components/parts/BalanceWindow.vue'
+import PurchasedWindow from '@/components/PurchasedWindow.vue'
 import API from '@/lib/RestAPI'
 import { Balance } from '@/lib/RestAPIProtocol'
 
 @Component({
   components: {
-    Authentication, PrivateProductsTable, BalanceWindow
+    Authentication, PrivateProductsTable, BalanceWindow, PurchasedWindow
   }
 })
 

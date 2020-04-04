@@ -8,15 +8,15 @@
         </tr>
         <tr>
           <th>商品名</th>
-          <td><input type="text" v-model="item.productTitle" placeholder="タイトル" class="title-input"></td>
+          <td><input type="text" v-model="item.title" placeholder="タイトル" class="title-input"></td>
         </tr>
         <tr>
           <th>詳細説明</th>
-          <td><textarea type="text" v-model="item.productDetail" placeholder="商品詳細" rows="5"></textarea></td>
+          <td><textarea type="text" v-model="item.detail" placeholder="商品詳細" rows="5"></textarea></td>
         </tr>
         <tr>
           <th>価格</th>
-          <td><input type="number" v-model.number="item.requestPrice" placeholder="価格" class="price-input"></td>
+          <td><input type="number" v-model.number="item.price" placeholder="価格" class="price-input"></td>
         </tr>
         </tbody>
       </table><br><br><br>
@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { ProductDetailRequest, ProductDetailResponse, StateEnum } from '@/lib/RestAPIProtocol'
+import { ProductDetailRequest, ContractDetailsResponse, StateEnum } from '@/lib/RestAPIProtocol'
 import WaitLoading from '@/components/parts/WaitLoading.vue'
 
 @Component({
@@ -44,7 +44,7 @@ export default class EditProductForm extends Vue {
     private loadingFlag!: boolean
 
     @Prop()
-    private item!: ProductDetailResponse;
+    private item!: ContractDetailsResponse;
 
     @Emit()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -54,9 +54,9 @@ export default class EditProductForm extends Vue {
 
     onClick (state: StateEnum) {
       this.clickEvent({
-        title: this.item.productTitle,
-        detail: this.item.productDetail,
-        price: this.item.requestPrice,
+        title: this.item.title,
+        detail: this.item.detail,
+        price: this.item.price,
         state: state
       })
     }

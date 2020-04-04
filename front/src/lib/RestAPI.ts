@@ -3,7 +3,7 @@ import {
   Balance,
   DisplayLimit, ErrorResponseJson,
   OAuth2CodeRedirect, ProductDetailRequest,
-  ProductDetailResponse,
+  ContractDetailsResponse,
   SignData,
   StateDisplayLimit
 } from '@/lib/RestAPIProtocol'
@@ -99,66 +99,66 @@ export default class RestAPI {
       .catch((e: AxiosError) => this.errorHandler<string>(e))
   }
 
-  getProducts (params: DisplayLimit): Promise<Array<ProductDetailResponse>> {
+  getProducts (params: DisplayLimit): Promise<Array<ContractDetailsResponse>> {
     return axios({
-      url: this.host + '/products',
+      url: this.host + '/items',
       method: 'get',
       params: params
     })
       .then((res: AxiosResponse) => {
-        const list: Array<ProductDetailResponse> = res.data
+        const list: Array<ContractDetailsResponse> = res.data
         return list
       })
-      .catch((e: AxiosError) => this.errorHandler<Array<ProductDetailResponse>>(e))
+      .catch((e: AxiosError) => this.errorHandler<Array<ContractDetailsResponse>>(e))
   }
 
-  getProductDetail (productId: string): Promise<ProductDetailResponse> {
+  getProductDetail (itemId: string): Promise<ContractDetailsResponse> {
     return axios({
-      url: this.host + '/product/' + productId,
+      url: this.host + '/item/' + itemId,
       method: 'get'
     })
       .then((res: AxiosResponse) => {
-        const result: ProductDetailResponse = res.data
+        const result: ContractDetailsResponse = res.data
         return result
       })
-      .catch((e: AxiosError) => this.errorHandler<ProductDetailResponse>(e))
+      .catch((e: AxiosError) => this.errorHandler<ContractDetailsResponse>(e))
   }
 
-  getMyProductDetail (productId: string): Promise<ProductDetailResponse> {
+  getMyProductDetail (itemId: string): Promise<ContractDetailsResponse> {
     return this.findSessionToken().then(sessionToken => {
       return axios({
-        url: this.host + '/product/' + productId,
+        url: this.host + '/item/' + itemId,
         method: 'get',
         headers: { Authorization: sessionToken }
       })
         .then((res: AxiosResponse) => {
-          const result: ProductDetailResponse = res.data
+          const result: ContractDetailsResponse = res.data
           return result
         })
-        .catch((e: AxiosError) => this.errorHandler<ProductDetailResponse>(e))
+        .catch((e: AxiosError) => this.errorHandler<ContractDetailsResponse>(e))
     })
   }
 
-  getMyProducts (params: StateDisplayLimit): Promise<Array<ProductDetailResponse>> {
+  getMyProducts (params: StateDisplayLimit): Promise<Array<ContractDetailsResponse>> {
     return this.findSessionToken().then(sessionToken => {
       return axios({
-        url: this.host + '/products/self',
+        url: this.host + '/items/my',
         method: 'get',
         headers: { Authorization: sessionToken },
         params: params
       })
         .then((res: AxiosResponse) => {
-          const list: Array<ProductDetailResponse> = res.data
+          const list: Array<ContractDetailsResponse> = res.data
           return list
         })
-        .catch((e: AxiosError) => this.errorHandler<Array<ProductDetailResponse>>(e))
+        .catch((e: AxiosError) => this.errorHandler<Array<ContractDetailsResponse>>(e))
     })
   }
 
   postProduct (data: ProductDetailRequest): Promise<string> {
     return this.findSessionToken().then(sessionToken => {
       return axios({
-        url: this.host + '/product',
+        url: this.host + '/item',
         method: 'post',
         headers: { Authorization: sessionToken },
         data: data
@@ -168,10 +168,10 @@ export default class RestAPI {
     })
   }
 
-  editProduct (productId: string, data: ProductDetailRequest): Promise<string> {
+  editProduct (itemId: string, data: ProductDetailRequest): Promise<string> {
     return this.findSessionToken().then(sessionToken => {
       return axios({
-        url: this.host + '/product/' + productId,
+        url: this.host + '/item/' + itemId,
         method: 'put',
         headers: { Authorization: sessionToken },
         data: data
@@ -186,6 +186,42 @@ export default class RestAPI {
       return axios({
         url: this.host + '/money',
         method: 'get',
+        headers: { Authorization: sessionToken }
+      })
+        .then((res: AxiosResponse) => res.data)
+        .catch((e: AxiosError) => this.errorHandler<string>(e))
+    })
+  }
+
+  purchaseItem (itemId: string): Promise<void> {
+    return this.findSessionToken().then(sessionToken => {
+      return axios({
+        url: this.host + '/item/' + itemId + '/purchase',
+        method: 'PUT',
+        headers: { Authorization: sessionToken }
+      })
+        .then((res: AxiosResponse) => res.data)
+        .catch((e: AxiosError) => this.errorHandler<string>(e))
+    })
+  }
+
+  paymentForItem (itemId: string) {
+    return this.findSessionToken().then(sessionToken => {
+      return axios({
+        url: this.host + '/item/' + itemId + '/payment',
+        method: 'PUT',
+        headers: { Authorization: sessionToken }
+      })
+        .then((res: AxiosResponse) => res.data)
+        .catch((e: AxiosError) => this.errorHandler<string>(e))
+    })
+  }
+
+  receiptOfItem (itemId: string) {
+    return this.findSessionToken().then(sessionToken => {
+      return axios({
+        url: this.host + '/item/' + itemId + '/receipt',
+        method: 'PUT',
         headers: { Authorization: sessionToken }
       })
         .then((res: AxiosResponse) => res.data)

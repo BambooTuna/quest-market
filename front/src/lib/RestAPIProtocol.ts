@@ -9,7 +9,7 @@ export type OAuth2CodeRedirect = {
   code?: string;
 }
 
-export type StateEnum = 'open' | 'draft' | 'closed' | 'deleted'
+export type StateEnum = 'open' | 'sold' | 'draft' | 'unpaid' | 'sent' | 'complete' | 'deleted'
 export type ProductDetailRequest = {
   title: string;
   detail: string;
@@ -17,12 +17,12 @@ export type ProductDetailRequest = {
   state: StateEnum;
 }
 
-export type ProductDetailResponse = {
-  id: string;
-  productTitle: string;
-  productDetail: string;
-  requestPrice: number;
-  presenterId: string;
+export type ContractDetailsResponse = {
+  item_id: string;
+  title: string;
+  detail: string;
+  price: number;
+  seller_account_id: string;
   state: StateEnum;
 }
 

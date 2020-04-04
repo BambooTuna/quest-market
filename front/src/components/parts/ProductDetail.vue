@@ -1,11 +1,11 @@
 <template>
   <div class="product-detail">
     <WaitLoading :loading_flag="loadingFlag">
-      <h1>{{item.productTitle}}</h1>
-      <p class="price">¥ {{item.requestPrice}}</p>
+      <h1>{{item.title}}</h1>
+      <p class="price">¥ {{item.price}}</p>
       <div class="detail">
         <h3>商品情報</h3>
-        <textarea type="text" v-model="item.productDetail" placeholder="商品詳細" rows="10" readonly></textarea>
+        <textarea type="text" v-model="item.detail" placeholder="商品詳細" rows="10" readonly></textarea>
       </div>
     </WaitLoading>
   </div>
@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { ProductDetailResponse } from '@/lib/RestAPIProtocol'
+import { ContractDetailsResponse } from '@/lib/RestAPIProtocol'
 import WaitLoading from '@/components/parts/WaitLoading.vue'
 
 @Component({
@@ -23,7 +23,7 @@ import WaitLoading from '@/components/parts/WaitLoading.vue'
 })
 export default class ProductDetail extends Vue {
     @Prop()
-    private item!: ProductDetailResponse;
+    private item!: ContractDetailsResponse;
 
     @Prop()
     private loadingFlag!: boolean

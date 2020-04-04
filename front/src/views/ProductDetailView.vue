@@ -10,7 +10,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import ProductDetail from '@/components/parts/ProductDetail.vue'
 import EditProductForm from '@/components/parts/EditProductForm.vue'
 import API from '@/lib/RestAPI'
-import { ProductDetailRequest, ProductDetailResponse } from '@/lib/RestAPIProtocol'
+import { ProductDetailRequest, ContractDetailsResponse } from '@/lib/RestAPIProtocol'
 
 @Component({
   components: {
@@ -19,12 +19,14 @@ import { ProductDetailRequest, ProductDetailResponse } from '@/lib/RestAPIProtoc
 })
 export default class ProductDetailView extends Vue {
     private api: API = new API()
-    private item: ProductDetailResponse = {
-      id: '',
-      productTitle: '',
-      productDetail: '',
-      requestPrice: 0,
-      presenterId: '',
+    private item: ContractDetailsResponse = {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      item_id: '',
+      title: '',
+      detail: '',
+      price: 0,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      seller_account_id: '',
       state: 'draft'
     }
 
@@ -39,7 +41,7 @@ export default class ProductDetailView extends Vue {
       this.productId = this.$route.params.id
       if (this.isEditMode()) {
         await this.api.getMyProductDetail(this.productId)
-          .then((res: ProductDetailResponse) => {
+          .then((res: ContractDetailsResponse) => {
             this.item = res
           })
           .catch(() => alert('見つかりません'))
@@ -48,7 +50,7 @@ export default class ProductDetailView extends Vue {
           })
       } else {
         await this.api.getProductDetail(this.productId)
-          .then((res: ProductDetailResponse) => {
+          .then((res: ContractDetailsResponse) => {
             this.item = res
           })
           .catch(() => alert('見つかりません'))

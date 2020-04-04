@@ -12,7 +12,7 @@ import Authentication from '@/components/Authentication.vue'
 import EditProductForm from '@/components/parts/EditProductForm.vue'
 import PrivateProductsTable from '@/components/PrivateProductsTable.vue'
 import API from '@/lib/RestAPI'
-import { ProductDetailRequest, ProductDetailResponse } from '@/lib/RestAPIProtocol'
+import { ProductDetailRequest, ContractDetailsResponse } from '@/lib/RestAPIProtocol'
 
 @Component({
   components: {
@@ -22,12 +22,12 @@ import { ProductDetailRequest, ProductDetailResponse } from '@/lib/RestAPIProtoc
 export default class Exhibition extends Vue {
   private api: API = new API()
 
-  private item: ProductDetailResponse = {
-    id: '',
-    productTitle: '',
-    productDetail: '',
-    requestPrice: 0,
-    presenterId: '',
+  private item: ContractDetailsResponse = {
+    item_id: '',
+    title: '',
+    detail: '',
+    price: 0,
+    seller_account_id: '',
     state: 'open'
   }
 
