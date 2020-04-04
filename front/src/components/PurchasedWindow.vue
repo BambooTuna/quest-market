@@ -8,6 +8,10 @@
     <div class="tab-content">
       <ProductsTable :items="buyItems()" :loadingFlag="loadingFlag"></ProductsTable>
     </div>
+    <input id="tab3" type="radio" name="TAB" class="tab-switch" /><label class="tab-label" for="tab3">下書き</label>
+    <div class="tab-content">
+      <ProductsTable :items="draftItems()" :privateMode="true" :loadingFlag="loadingFlag"></ProductsTable>
+    </div>
   </div>
 </template>
 
@@ -39,11 +43,15 @@ export default class PurchasedWindow extends Vue {
     }
 
     sellItems (): Array<ContractDetailsResponse> {
-      return this.items.filter((a: ContractDetailsResponse) => a.accessor === 'seller')
+      return this.items.filter((a: ContractDetailsResponse) => (a.accessor === 'seller' && a.state !== 'draft'))
     }
 
     buyItems (): Array<ContractDetailsResponse> {
       return this.items.filter((a: ContractDetailsResponse) => a.accessor === 'buyer')
+    }
+
+    draftItems (): Array<ContractDetailsResponse> {
+      return this.items.filter((a: ContractDetailsResponse) => a.accessor === 'seller' && a.state === 'draft')
     }
 }
 </script>
