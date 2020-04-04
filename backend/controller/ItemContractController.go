@@ -60,7 +60,7 @@ func (i *ItemContractController) GetMyItemContractsRoute() func(*gin.Context) {
 			return
 		}
 		quantityLimit := settings.QuantityLimit{Page: page, Limit: limit}
-		ctx.JSON(http.StatusBadRequest, json.ConvertToContractDetailsListResponseJson(i.ItemContractUseCase.GetMyItemContracts(quantityLimit, accountSessionToken.AccountId), accountSessionToken.AccountId))
+		ctx.JSON(http.StatusOK, json.ConvertToContractDetailsListResponseJson(i.ItemContractUseCase.GetMyItemContracts(quantityLimit, accountSessionToken.AccountId), accountSessionToken.AccountId))
 	})
 }
 

@@ -8,10 +8,11 @@ const (
 
 	Draft State = "draft"
 
-	Deleted  State = "deleted"
 	Unpaid   State = "unpaid"
 	Sent     State = "sent"
 	Complete State = "complete"
+
+	Deleted State = "deleted"
 )
 
 func (s State) Secret(hide bool) State {

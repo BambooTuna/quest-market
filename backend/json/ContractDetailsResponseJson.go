@@ -5,11 +5,11 @@ import (
 )
 
 type ContractDetailsResponseJson struct {
-	ItemId          string     `json:"id"`
-	Title           string     `json:"productTitle"`
-	Detail          string     `json:"productDetail"`
-	Price           int64      `json:"requestPrice"`
-	SellerAccountId string     `json:"presenterId"`
+	ItemId          string     `json:"item_id"`
+	Title           string     `json:"title"`
+	Detail          string     `json:"detail"`
+	Price           int64      `json:"price"`
+	SellerAccountId string     `json:"seller_account_id"`
 	State           item.State `json:"state"`
 }
 
