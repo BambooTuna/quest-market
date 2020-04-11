@@ -15,12 +15,12 @@ handlers:
   script: auto
 
 vpc_access_connector:
-  name: "projects/market-114/locations/asia-northeast1/connectors/market-connect"
+  name: "projects/market-273905/locations/us-central1/connectors/market-connect"
 
 env_variables:
   PORT: 8080
   SESSION_SECRET: asdfghjkl1234567890
-  ADMIN_ACCOUNT_ID: b8a276c4-eab9-346e-83ac-164651af4209
+  ADMIN_ACCOUNT_ID: f0c28384-3aa4-3f87-9fba-66a0aa62c504
   MYSQL_SOURCE: BambooTuna:pass@tcp(10.128.0.2:3306)/market
   MYSQL_USER: BambooTuna
   MYSQL_PASS: pass

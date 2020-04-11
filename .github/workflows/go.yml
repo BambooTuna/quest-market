@@ -29,7 +29,7 @@ jobs:
         cd ../
       env:
         NODE_ENV: development
-        VUE_APP_SERVER_ENDPOINT: https://market-114.appspot.com/v1
+        VUE_APP_SERVER_ENDPOINT: ${{ secrets.APIEndpoint }}
 
     - name: Set up Go 1.13
       uses: actions/setup-go@v1
@@ -52,5 +52,5 @@ jobs:
         gcloud app deploy app.yaml --project ${PROJECT_NAME}
       env:
         CI: true
-        PROJECT_NAME: market-114
+        PROJECT_NAME: ${{ secrets.ProjectName }}
         GCLOUD_SERVICE_KEY: ${{ secrets.GcloudServiceKey }}
